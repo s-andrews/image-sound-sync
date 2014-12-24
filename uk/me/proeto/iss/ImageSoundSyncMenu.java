@@ -18,6 +18,7 @@ public class ImageSoundSyncMenu extends JMenuBar implements ActionListener {
 		this.application = application;
 		
 		JMenu fileMenu = new JMenu("File");
+		fileMenu.setMnemonic(KeyEvent.VK_F);
 		JMenuItem openAudio = new JMenuItem("Open audio...");
 		openAudio.setActionCommand("open_audio");
 		openAudio.setMnemonic(KeyEvent.VK_A);
@@ -25,6 +26,17 @@ public class ImageSoundSyncMenu extends JMenuBar implements ActionListener {
 		fileMenu.add(openAudio);
 		
 		add(fileMenu);
+		
+		JMenu viewMenu = new JMenu("View");
+		viewMenu.setMnemonic(KeyEvent.VK_V);
+		JMenuItem viewPlay = new JMenuItem("Play");
+		viewPlay.setActionCommand("play");
+		viewPlay.addActionListener(this);
+		viewPlay.setMnemonic(KeyEvent.VK_P);
+		viewMenu.add(viewPlay);
+		
+		add(viewMenu);
+		
 		
 	}
 
@@ -40,6 +52,10 @@ public class ImageSoundSyncMenu extends JMenuBar implements ActionListener {
 			catch (IOException ioe) {
 				JOptionPane.showMessageDialog(application, ioe.getMessage(), "Can't load audio", JOptionPane.ERROR_MESSAGE);
 			}
+		}
+		
+		else if (command.equals("play")) {
+			application.play();
 		}
 		
 		

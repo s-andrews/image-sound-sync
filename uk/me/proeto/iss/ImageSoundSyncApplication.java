@@ -10,6 +10,7 @@ import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
 
 import uk.me.proeto.iss.gui.AudioPanel.AudioPanel;
+import uk.me.proeto.iss.player.PreviewPlayer;
 import uk.me.proeto.iss.sound.AudioFile;
 
 
@@ -61,6 +62,12 @@ public class ImageSoundSyncApplication extends JFrame {
 		readAudio(file);
 		
 	}
+	
+	public void play () {
+		// TODO: Check we have everything we need to actually play.
+		new PreviewPlayer(data);
+	}
+	
 	
 	public void readAudio (File file) throws IOException {
 		data.setAudioFile(new AudioFile(file));
