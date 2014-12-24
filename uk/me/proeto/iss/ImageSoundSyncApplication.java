@@ -1,5 +1,6 @@
 package uk.me.proeto.iss;
 
+import java.awt.BorderLayout;
 import java.io.File;
 import java.io.IOException;
 
@@ -8,17 +9,23 @@ import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
 
+import uk.me.proeto.iss.gui.AudioPanel;
 import uk.me.proeto.iss.sound.AudioFile;
 
 
 public class ImageSoundSyncApplication extends JFrame {
 
 	private ImageSoundData data = new ImageSoundData();
+	private AudioPanel audioPanel = new AudioPanel();
 	
 	public ImageSoundSyncApplication () {
 		
 		super("Image Sound Sync");
 		setJMenuBar(new ImageSoundSyncMenu(this));
+		
+		setLayout(new BorderLayout());
+		add(audioPanel,BorderLayout.NORTH);
+		
 		
 		setSize(1024,768);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -57,6 +64,7 @@ public class ImageSoundSyncApplication extends JFrame {
 	
 	public void readAudio (File file) throws IOException {
 		data.setAudioFile(new AudioFile(file));
+		audioPanel.setSamples(data.audioFile().rawSampleData());
 	}
 	
 	

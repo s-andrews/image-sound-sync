@@ -50,4 +50,9 @@ public class ImageSoundData {
 			listeners.remove(l);
 		}
 	}
+	
+	public AudioFile audioFile () {
+		return audioFile;
+	}
+	
 }

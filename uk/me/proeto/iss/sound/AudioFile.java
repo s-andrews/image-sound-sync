@@ -50,7 +50,7 @@ public class AudioFile {
 			
 			rawSamples[i] = max;
 			
-			System.out.println("Max value for sample "+i+" is "+rawSamples[i]);
+//			System.out.println("Max value for sample "+i+" is "+rawSamples[i]);
 			
 			
 		}
