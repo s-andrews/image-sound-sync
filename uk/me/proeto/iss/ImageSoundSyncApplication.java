@@ -9,14 +9,14 @@ import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
 
-import uk.me.proeto.iss.gui.AudioPanel;
+import uk.me.proeto.iss.gui.AudioPanel.AudioPanel;
 import uk.me.proeto.iss.sound.AudioFile;
 
 
 public class ImageSoundSyncApplication extends JFrame {
 
 	private ImageSoundData data = new ImageSoundData();
-	private AudioPanel audioPanel = new AudioPanel();
+	private AudioPanel audioPanel = new AudioPanel(data);
 	
 	public ImageSoundSyncApplication () {
 		
@@ -64,7 +64,6 @@ public class ImageSoundSyncApplication extends JFrame {
 	
 	public void readAudio (File file) throws IOException {
 		data.setAudioFile(new AudioFile(file));
-		audioPanel.setSamples(data.audioFile().rawSampleData());
 	}
 	
 	

@@ -1,4 +1,4 @@
-package uk.me.proeto.iss.gui;
+package uk.me.proeto.iss.gui.AudioPanel;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -6,11 +6,15 @@ import java.awt.Graphics;
 
 import javax.swing.JPanel;
 
-public class AudioPanel extends JPanel {
+public class WaveformPanel extends JPanel {
 
 	private double [] samples = new double [0];
 	private double max = 1;
-	private Color colour = new Color(0,0,200);
+	private Color colour;
+	
+	public WaveformPanel (Color colour) {
+		this.colour = colour;
+	}
 	
 	public void setSamples (double [] samples) {
 		this.samples = samples;
@@ -38,7 +42,7 @@ public class AudioPanel extends JPanel {
 	}
 	
 	public Dimension getPreferredSize () {
-		return new Dimension(1000,300);
+		return new Dimension(1000,120);
 	}
 	
 	public void paint (Graphics g) {
@@ -74,13 +78,6 @@ public class AudioPanel extends JPanel {
 			lastX = x;
 			
 		}
-		
-		
-		
 	}
-	
-	
-	
-
 	
 }
