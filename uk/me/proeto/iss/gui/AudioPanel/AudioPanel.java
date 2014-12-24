@@ -25,6 +25,7 @@ public class AudioPanel extends JPanel implements ImageSoundListener {
 		gbc.gridy=1;
 		gbc.weightx=0.5;
 		gbc.weighty=0.9;
+		gbc.fill = GridBagConstraints.BOTH;
 		
 		rawWaveform = new WaveformPanel(new Color(0,0,200));
 		add(rawWaveform,gbc);
@@ -42,7 +43,7 @@ public class AudioPanel extends JPanel implements ImageSoundListener {
 	public void newAudioFile(AudioFile audioFile) {
 
 		rawWaveform.setSamples(audioFile.rawSampleData());
-		normalisedWaveform.setSamples(audioFile.rawSampleData()); // TODO: Make normalised
+		normalisedWaveform.setSamples(audioFile.smoothedSampleData());
 	}
 
 	@Override

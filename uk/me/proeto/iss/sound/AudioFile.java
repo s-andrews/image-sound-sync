@@ -7,11 +7,13 @@ import uk.co.labbookpages.WavFile.WavFile;
 
 public class AudioFile {
 
-	private File file = null;
-	private double [] rawSamples = null;
-		
 	public static final int SAMPLES_PER_SECOND = 10;
 
+	private File file = null;
+	private double [] rawSamples = null;
+	private double [] smoothedSamples = null;
+	private int smoothingWindow;	
+	
 	public AudioFile (File file) throws IOException {
 		this.file = file;
 		
@@ -37,6 +39,7 @@ public class AudioFile {
 		double [] buffer = new double[bufferSize*wavFile.getNumChannels()];
 				
 		rawSamples = new double[(int)(wavFile.getNumFrames()/wavFile.getSampleRate())*SAMPLES_PER_SECOND];
+		smoothedSamples = new double[rawSamples.length];
 		
 		System.out.println("Samples to read is "+rawSamples.length);
 		
@@ -50,11 +53,47 @@ public class AudioFile {
 			
 			rawSamples[i] = max;
 			
+			setSmoothing(SAMPLES_PER_SECOND);
+			
 //			System.out.println("Max value for sample "+i+" is "+rawSamples[i]);
 			
 			
 		}
 		
+	}
+	
+	public void setSmoothing (int smoothingWindow) {
+		this.smoothingWindow = smoothingWindow;
+		
+		for (int i=0;i<rawSamples.length;i++) {
+			int startIndex = i-(smoothingWindow/2);
+			if (startIndex < 0) startIndex = 0;
+			int endIndex = startIndex+smoothingWindow;
+			if (endIndex >= rawSamples.length) endIndex = rawSamples.length-1;
+			
+			double total = 0;
+			int count = 0;
+			
+			for (int j=startIndex;j<endIndex;j++) {
+				if (j==i) continue;
+				total += rawSamples[j];
+				++count;
+			}
+			smoothedSamples[i] = rawSamples[i] - (total/count);
+		}
+		
+		// We will now have some negative values, which we need to remove to keep
+		// everything on a positive scale.
+		double minValue = Double.MAX_VALUE;
+		
+		for (int i=0;i<smoothedSamples.length;i++) {
+			if (smoothedSamples[i] < minValue) minValue = smoothedSamples[i];
+		}
+
+		for (int i=0;i<smoothedSamples.length;i++) {
+			smoothedSamples[i] -= minValue;
+		}
+
 	}
 	
 	public File file () {
@@ -65,5 +104,9 @@ public class AudioFile {
 		return rawSamples;
 	}
 	
+	public double [] smoothedSampleData () {
+		return smoothedSamples;
+	}
+
 	
 }
