@@ -1,5 +1,8 @@
 package uk.co.labbookpages.WavFile;
-public class WavFileException extends Exception
+
+import java.io.IOException;
+
+public class WavFileException extends IOException
 {
 	public WavFileException()
 	{

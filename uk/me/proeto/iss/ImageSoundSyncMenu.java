@@ -3,10 +3,12 @@ package uk.me.proeto.iss;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
 public class ImageSoundSyncMenu extends JMenuBar implements ActionListener {
 
@@ -22,9 +24,6 @@ public class ImageSoundSyncMenu extends JMenuBar implements ActionListener {
 		openAudio.addActionListener(this);
 		fileMenu.add(openAudio);
 		
-		
-		
-		
 		add(fileMenu);
 		
 	}
@@ -35,7 +34,12 @@ public class ImageSoundSyncMenu extends JMenuBar implements ActionListener {
 		String command = e.getActionCommand();
 		
 		if (command.equals("open_audio")) {
-			application.readAudio();
+			try {
+				application.readAudio();
+			}
+			catch (IOException ioe) {
+				JOptionPane.showMessageDialog(application, ioe.getMessage(), "Can't load audio", JOptionPane.ERROR_MESSAGE);
+			}
 		}
 		
 		
