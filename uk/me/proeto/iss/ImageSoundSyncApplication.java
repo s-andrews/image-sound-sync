@@ -10,6 +10,7 @@ import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
 
 import uk.me.proeto.iss.gui.AudioPanel.AudioPanel;
+import uk.me.proeto.iss.images.ImageSet;
 import uk.me.proeto.iss.player.PreviewPlayer;
 import uk.me.proeto.iss.sound.AudioFile;
 
@@ -63,17 +64,48 @@ public class ImageSoundSyncApplication extends JFrame {
 		
 	}
 	
-	public void play () {
-		// TODO: Check we have everything we need to actually play.
-		new PreviewPlayer(data);
-	}
-	
-	
 	public void readAudio (File file) throws IOException {
 		data.setAudioFile(new AudioFile(file));
 	}
 	
+	public void loadImages () throws IOException {
+		JFileChooser chooser = new JFileChooser();
+		chooser.setMultiSelectionEnabled(true);
+		chooser.setFileFilter(new FileFilter() {
+		
+			public String getDescription() {
+				return "JPEG files";
+			}
+		
+			public boolean accept(File f) {
+				if (f.isDirectory() || f.getName().toLowerCase().endsWith(".jpg") || f.getName().toLowerCase().endsWith(".jpeg")) {
+					return true;
+				}
+				else {
+					return false;
+				}
+			}
+		
+		});
+		
+		int result = chooser.showOpenDialog(this);
+		if (result == JFileChooser.CANCEL_OPTION) return;
+
+		File [] files = chooser.getSelectedFiles();
+		loadImages(files);
+		
+	}
 	
+	public void loadImages (File [] files) throws IOException {
+		data.setImageSet(new ImageSet(files));
+	}
+	
+	
+	public void play () {
+		// TODO: Check we have everything we need to actually play.
+		new PreviewPlayer(data);
+	}
+
 	public static void main(String[] args) {
 		
 		try {
