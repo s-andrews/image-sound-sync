@@ -7,17 +7,13 @@ import uk.me.proeto.iss.images.ImageSet;
 import uk.me.proeto.iss.sound.AudioFile;
 import uk.me.proeto.iss.sync.Synchronisation;
 
-
-
 public class ImageSoundData {
 
 	private ImageSet imageSet = null;
-	private AudioFile audioFile = null;
-	private Synchronisation synchronisation = new Synchronisation();
-	
+	private AudioFile audioFile = null;	
 	private Vector<ImageSoundListener> listeners = new Vector<ImageSoundListener>();
-	
-	
+	private Synchronisation synchronisation = new Synchronisation(this);
+
 	
 	public void setAudioFile (AudioFile audioFile) {
 		this.audioFile = audioFile;
@@ -53,6 +49,14 @@ public class ImageSoundData {
 	
 	public AudioFile audioFile () {
 		return audioFile;
+	}
+	
+	public ImageSet imageSet () {
+		return imageSet;
+	}
+	
+	public Synchronisation synchronisation () {
+		return synchronisation;
 	}
 	
 }
