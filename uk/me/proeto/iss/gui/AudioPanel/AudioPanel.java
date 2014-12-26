@@ -15,8 +15,10 @@ public class AudioPanel extends JPanel implements ImageSoundListener {
 
 	private WaveformPanel rawWaveform;
 	private WaveformPanel normalisedWaveform;
+	private ImageSoundData data;
 	
 	public AudioPanel (ImageSoundData data) {
+		this.data = data;
 		data.addListener(this);
 		setLayout(new GridBagLayout());
 		
@@ -39,17 +41,17 @@ public class AudioPanel extends JPanel implements ImageSoundListener {
 		
 	}
 	
-	@Override
 	public void newAudioFile(AudioFile audioFile) {
 
 		rawWaveform.setSamples(audioFile.rawSampleData());
 		normalisedWaveform.setSamples(audioFile.smoothedSampleData());
 	}
 
-	@Override
 	public void newImageSet(ImageSet imageSet) {
-		// TODO Auto-generated method stub
-		
+		// Redraw the waveforms to highlight and transitions which might
+		// have been calculated.
+		rawWaveform.setTransitions(data.synchronisation().videoTransitions());
+		normalisedWaveform.setTransitions(data.synchronisation().videoTransitions());
 	}
 
 	

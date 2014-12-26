@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 public class WaveformPanel extends JPanel {
 
 	private double [] samples = new double [0];
+	private int [] transitions = null;
 	private double max = 1;
 	private Color colour;
 	
@@ -22,6 +23,11 @@ public class WaveformPanel extends JPanel {
 		for (int i=0;i<samples.length;i++) {
 			if (samples[i]>max) max = samples[i];
 		}
+		repaint();
+	}
+	
+	public void setTransitions (int [] transitions) {
+		this.transitions = transitions;
 		repaint();
 	}
 	
@@ -78,6 +84,16 @@ public class WaveformPanel extends JPanel {
 			lastX = x;
 			
 		}
+		
+		// See if we can highlight any transitions
+		if (transitions != null) {
+			g.setColor(Color.RED);
+			for (int i=0;i<transitions.length;i++) {
+				g.drawLine(getX(transitions[i]), 0, getX(transitions[i]), getHeight());
+			}
+		}
+		
+		
 	}
 	
 }
