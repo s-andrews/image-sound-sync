@@ -17,7 +17,6 @@ public class ImageSoundData {
 	
 	public void setAudioFile (AudioFile audioFile) {
 		this.audioFile = audioFile;
-		//TODO: Tell the synchronisation that the audio file has updated
 		
 		Enumeration<ImageSoundListener> en = listeners.elements();
 		while (en.hasMoreElements()) {
@@ -25,9 +24,22 @@ public class ImageSoundData {
 		}
 	}
 	
+	public void setSelectedVideoFrame (int index) {
+		Enumeration<ImageSoundListener> en = listeners.elements();
+		while (en.hasMoreElements()) {
+			en.nextElement().videoFrameSelected(this, index);
+		}
+	}
+
+	public void setSelectedAudioFrame (int index) {
+		Enumeration<ImageSoundListener> en = listeners.elements();
+		while (en.hasMoreElements()) {
+			en.nextElement().audioFrameSelected(this, index);
+		}
+	}
+
 	public void setImageSet (ImageSet imageSet) {
 		this.imageSet = imageSet;
-		//TODO: Tell the synchronisation that the image set has updated
 		
 		Enumeration<ImageSoundListener> en = listeners.elements();
 		while (en.hasMoreElements()) {
