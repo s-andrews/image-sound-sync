@@ -68,6 +68,7 @@ public class ImagePanel extends JPanel implements ImageSoundListener {
 		if (frame == currentImageIndex) return;
 		
 		currentImage = data.imageSet().getImage(frame);
+		currentImageIndex = frame;
 		repaint();
 	}
 }

@@ -12,6 +12,7 @@ import javax.swing.filechooser.FileFilter;
 
 import uk.me.proeto.iss.gui.ImagePanel;
 import uk.me.proeto.iss.gui.AudioPanel.AudioPanel;
+import uk.me.proeto.iss.gui.ImageList.ImageList;
 import uk.me.proeto.iss.images.ImageSet;
 import uk.me.proeto.iss.player.PreviewPlayer;
 import uk.me.proeto.iss.sound.AudioFile;
@@ -34,9 +35,8 @@ public class ImageSoundSyncApplication extends JFrame {
 		topBottomPane.setTopComponent(audioPanel);
 		topBottomPane.setBottomComponent(leftRightPane);
 		
-		//TODO: Put in proper components here
 		leftRightPane.setLeftComponent(new ImagePanel(data));
-		leftRightPane.setRightComponent(new JPanel());
+		leftRightPane.setRightComponent(new ImageList(data));
 		
 		setSize(1024,768);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
