@@ -1,5 +1,6 @@
 package uk.me.proeto.iss.images;
 
+import java.awt.Image;
 import java.io.File;
 
 import javax.swing.ImageIcon;
@@ -7,16 +8,16 @@ import javax.swing.ImageIcon;
 public class ImageSet {
 
 	private File [] imageFiles;
-	private ImageIcon [] icons;
+	private Image [] images;
 	
 	
 	public ImageSet (File [] imageFiles) {
 		this.imageFiles = imageFiles;
 		
-		icons = new ImageIcon [imageFiles.length];
+		images = new Image [imageFiles.length];
 		
 		for (int i=0;i<imageFiles.length;i++) {
-			icons[i] = new ImageIcon(imageFiles[i].getAbsolutePath());
+			images[i] = (new ImageIcon(imageFiles[i].getAbsolutePath())).getImage();
 		}
 		
 	}
@@ -25,8 +26,12 @@ public class ImageSet {
 		return imageFiles;
 	}
 	
-	public ImageIcon [] icons () {
-		return icons;
+	public Image [] images () {
+		return images;
+	}
+	
+	public Image getImage (int index) {
+		return images[index];
 	}
 	
 }

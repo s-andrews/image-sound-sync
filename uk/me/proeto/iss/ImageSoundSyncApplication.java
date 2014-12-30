@@ -10,6 +10,7 @@ import javax.swing.JSplitPane;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
 
+import uk.me.proeto.iss.gui.ImagePanel;
 import uk.me.proeto.iss.gui.AudioPanel.AudioPanel;
 import uk.me.proeto.iss.images.ImageSet;
 import uk.me.proeto.iss.player.PreviewPlayer;
@@ -34,7 +35,7 @@ public class ImageSoundSyncApplication extends JFrame {
 		topBottomPane.setBottomComponent(leftRightPane);
 		
 		//TODO: Put in proper components here
-		leftRightPane.setLeftComponent(new JPanel());
+		leftRightPane.setLeftComponent(new ImagePanel(data));
 		leftRightPane.setRightComponent(new JPanel());
 		
 		setSize(1024,768);
