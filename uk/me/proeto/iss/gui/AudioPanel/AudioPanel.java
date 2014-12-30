@@ -8,17 +8,13 @@ import javax.swing.JPanel;
 
 import uk.me.proeto.iss.ImageSoundData;
 import uk.me.proeto.iss.ImageSoundListener;
-import uk.me.proeto.iss.images.ImageSet;
-import uk.me.proeto.iss.sound.AudioFile;
 
 public class AudioPanel extends JPanel implements ImageSoundListener {
 
 	private WaveformPanel rawWaveform;
 	private WaveformPanel normalisedWaveform;
-	private ImageSoundData data;
 	
 	public AudioPanel (ImageSoundData data) {
-		this.data = data;
 		data.addListener(this);
 		setLayout(new GridBagLayout());
 		
@@ -35,32 +31,34 @@ public class AudioPanel extends JPanel implements ImageSoundListener {
 		gbc.gridy++;
 		
 		normalisedWaveform = new WaveformPanel(new Color(0,200,0));
-		add(normalisedWaveform,gbc);
-		
-		
-		
+		add(normalisedWaveform,gbc);	
 	}
 	
-	public void newAudioFile(AudioFile audioFile) {
-
-		rawWaveform.setSamples(audioFile.rawSampleData());
-		normalisedWaveform.setSamples(audioFile.smoothedSampleData());
+	public void newAudioFile(ImageSoundData data) {
+		rawWaveform.setSamples(data.audioFile().rawSampleData());
+		normalisedWaveform.setSamples(data.audioFile().smoothedSampleData());
 	}
 
-	public void newImageSet(ImageSet imageSet) {
-		// Redraw the waveforms to highlight and transitions which might
+	public void newImageSet(ImageSoundData data) {
+		transitionsUpdated(data);
+	}
+
+	public void transitionsUpdated(ImageSoundData data) {
+		// Redraw the waveforms to highlight and transitions which
 		// have been calculated.
 		rawWaveform.setTransitions(data.synchronisation().videoTransitions());
-		normalisedWaveform.setTransitions(data.synchronisation().videoTransitions());
+		normalisedWaveform.setTransitions(data.synchronisation().videoTransitions());		
 	}
 
-	
-		
-		
-		
-	
-	
-	
+	public void audioFrameSelected(ImageSoundData data, int frame) {
+		rawWaveform.setSelectedFrame(frame);
+		normalisedWaveform.setSelectedFrame(frame);
+	}
+
+	public void videoFrameSelected(ImageSoundData data, int frame) {
+		int audioFrame = data.synchronisation().getSoundFrameForImageIndex(frame);
+		audioFrameSelected(data, audioFrame);
+	}
 	
 
 	

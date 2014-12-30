@@ -1,12 +1,11 @@
 package uk.me.proeto.iss;
 
-import uk.me.proeto.iss.images.ImageSet;
-import uk.me.proeto.iss.sound.AudioFile;
-
-
 public interface ImageSoundListener {
 
-	public void newAudioFile (AudioFile audioFile);
-	public void newImageSet (ImageSet imageSet);
+	public void newAudioFile (ImageSoundData data);
+	public void newImageSet (ImageSoundData data);
+	public void transitionsUpdated (ImageSoundData data);
+	public void audioFrameSelected(ImageSoundData data, int frame);
+	public void videoFrameSelected(ImageSoundData data, int frame);
 	
 }

@@ -21,7 +21,7 @@ public class ImageSoundData {
 		
 		Enumeration<ImageSoundListener> en = listeners.elements();
 		while (en.hasMoreElements()) {
-			en.nextElement().newAudioFile(audioFile);
+			en.nextElement().newAudioFile(this);
 		}
 	}
 	
@@ -31,7 +31,7 @@ public class ImageSoundData {
 		
 		Enumeration<ImageSoundListener> en = listeners.elements();
 		while (en.hasMoreElements()) {
-			en.nextElement().newImageSet(imageSet);
+			en.nextElement().newImageSet(this);
 		}
 	}
 	

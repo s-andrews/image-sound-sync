@@ -6,8 +6,6 @@ import java.util.Vector;
 
 import uk.me.proeto.iss.ImageSoundData;
 import uk.me.proeto.iss.ImageSoundListener;
-import uk.me.proeto.iss.images.ImageSet;
-import uk.me.proeto.iss.sound.AudioFile;
 
 public class Synchronisation implements ImageSoundListener {
 
@@ -114,18 +112,24 @@ public class Synchronisation implements ImageSoundListener {
 	}
 	
 	
-	public void newAudioFile(AudioFile audioFile) {
+	public void newAudioFile(ImageSoundData data) {
 		keyFrames.clear();
 		generateSynchronisation();
 	}
 
-	public void newImageSet(ImageSet imageSet) {
+	public void newImageSet(ImageSoundData data) {
 		keyFrames.clear();
 		generateSynchronisation();
 	}
 	
-	private class doubleValueComparator implements Comparator<Integer> {
+	public void transitionsUpdated(ImageSoundData data) {}
 
+	public void audioFrameSelected(ImageSoundData data, int frame) {}
+
+	public void videoFrameSelected(ImageSoundData data, int frame) {}
+
+	private class doubleValueComparator implements Comparator<Integer> {
+	
 		private double [] data;
 		
 		public doubleValueComparator (double [] data) {

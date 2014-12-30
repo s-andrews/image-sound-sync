@@ -12,6 +12,7 @@ public class WaveformPanel extends JPanel {
 	private int [] transitions = null;
 	private double max = 1;
 	private Color colour;
+	private int selectedAudioFrame = 0;
 	
 	public WaveformPanel (Color colour) {
 		this.colour = colour;
@@ -28,6 +29,11 @@ public class WaveformPanel extends JPanel {
 	
 	public void setTransitions (int [] transitions) {
 		this.transitions = transitions;
+		repaint();
+	}
+	
+	public void setSelectedFrame (int frame) {
+		this.selectedAudioFrame = frame;
 		repaint();
 	}
 	
@@ -92,6 +98,10 @@ public class WaveformPanel extends JPanel {
 				g.drawLine(getX(transitions[i]), 0, getX(transitions[i]), getHeight());
 			}
 		}
+		
+		// Draw the play head
+		g.setColor(Color.BLACK);
+		g.drawLine(getX(selectedAudioFrame), 0, getX(selectedAudioFrame), getHeight());
 		
 		
 	}
