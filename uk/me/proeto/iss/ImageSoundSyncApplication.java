@@ -1,11 +1,12 @@
 package uk.me.proeto.iss;
 
-import java.awt.BorderLayout;
 import java.io.File;
 import java.io.IOException;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JSplitPane;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
 
@@ -25,15 +26,24 @@ public class ImageSoundSyncApplication extends JFrame {
 		super("Image Sound Sync");
 		setJMenuBar(new ImageSoundSyncMenu(this));
 		
-		setLayout(new BorderLayout());
-		add(audioPanel,BorderLayout.NORTH);
+		JSplitPane topBottomPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+		JSplitPane leftRightPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+		setContentPane(topBottomPane);
 		
+		topBottomPane.setTopComponent(audioPanel);
+		topBottomPane.setBottomComponent(leftRightPane);
+		
+		//TODO: Put in proper components here
+		leftRightPane.setLeftComponent(new JPanel());
+		leftRightPane.setRightComponent(new JPanel());
 		
 		setSize(1024,768);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
+				
 		setVisible(true);
-		
+		leftRightPane.setDividerLocation(0.5);
+
 	}
 	
 	public void readAudio () throws IOException {
