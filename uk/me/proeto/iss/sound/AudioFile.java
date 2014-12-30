@@ -12,7 +12,8 @@ public class AudioFile {
 	private File file = null;
 	private double [] rawSamples = null;
 	private double [] smoothedSamples = null;
-	private int smoothingWindow;	
+	private int smoothingWindow;
+	private int bufferSize;
 	
 	public AudioFile (File file) throws IOException {
 		this.file = file;
@@ -30,7 +31,7 @@ public class AudioFile {
 			throw new IOException("Can't make a suitable buffer for "+SAMPLES_PER_SECOND+" frames per second");
 		}
 		
-		int bufferSize = (int)(sampleRate/SAMPLES_PER_SECOND);
+		bufferSize = (int)(sampleRate/SAMPLES_PER_SECOND);
 		
 		System.out.println("Buffer size = "+bufferSize);
 		
@@ -60,6 +61,10 @@ public class AudioFile {
 			
 		}
 		
+	}
+	
+	public int getFrameForRawAudioPosition (int position) {
+		return (position/bufferSize);
 	}
 	
 	public void setSmoothing (int smoothingWindow) {

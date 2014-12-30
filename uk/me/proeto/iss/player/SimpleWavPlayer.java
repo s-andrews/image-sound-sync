@@ -10,11 +10,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Enumeration;
+import java.util.Vector;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
+import javax.sound.sampled.LineListener;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -22,10 +25,24 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 public class SimpleWavPlayer {
 
 	private InputStream inputStream;
+	private Vector<LineListener>listeners = new Vector<LineListener>();
+	private SourceDataLine sourceDataLine = null;
 
 	public SimpleWavPlayer (File file) throws IOException {
 		inputStream = new FileInputStream(file);
 	}
+	
+	public void addLineListener (LineListener l) {
+		if (l != null && ! listeners.contains(l)) {
+			listeners.add(l);
+		}
+	}
+	
+	public int getAudioFrame () {
+		if (sourceDataLine == null) return 0;
+		return sourceDataLine.getFramePosition();
+	}
+	
 
 	public void play() {
 		new Thread() {
@@ -41,13 +58,16 @@ public class SimpleWavPlayer {
 					e.printStackTrace();
 					return;
 				}
-
-				SourceDataLine sourceDataLine = null;
+				
 				try {
 					AudioFormat audioFormat = audioInputStream.getFormat();
 					DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
 					sourceDataLine = (SourceDataLine) AudioSystem.getLine(info);
 					sourceDataLine.open(audioFormat);
+					Enumeration<LineListener> en = listeners.elements();
+					while (en.hasMoreElements()) {
+						sourceDataLine.addLineListener(en.nextElement());
+					}
 				} 
 				catch (LineUnavailableException e) {
 					e.printStackTrace();
