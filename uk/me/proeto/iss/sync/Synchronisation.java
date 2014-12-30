@@ -11,12 +11,13 @@ public class Synchronisation implements ImageSoundListener {
 
 	private ImageSoundData data;
 	
-	// This is going to hold the image indices for each sub-sampled sound frame.  It's
-	// the basic data structure used to hold the syncrhonisation.
+	// This data structure is the length of the audio indices and says which video
+	// index is being shown for each audio frame.
 	private int [] imageIndices = new int[0];
 	
-	// This is the equivalent data structure for the sound indices so we can look up
-	// which sound frame should be playing at any given image transition.
+	// This is the equivalent data structure for the sound indices it's the length of the
+	// video indices and tells you which audio frame happens at the transition to each 
+	// new image.
 	private int [] soundIndices = new int[0];
 	
 	// Key frames specify points in the data where the synchronisation is manually
@@ -101,7 +102,14 @@ public class Synchronisation implements ImageSoundListener {
 			System.out.println("Transition to frame "+(startVideoFrame+i)+" happens at "+transitionFrames[i]);
 		}
 		
-		// TODO: Assign the video frame data
+		for (int i=1;i<soundIndices.length;i++) {
+			for (int j=soundIndices[i-1];j<soundIndices[i];j++) {
+				imageIndices[j] = i-1;
+			}
+		}
+		for (int i=soundIndices[soundIndices.length-1];i<imageIndices.length;i++) {
+			imageIndices[i] = soundIndices.length-1;
+		}
 		
 		
 		

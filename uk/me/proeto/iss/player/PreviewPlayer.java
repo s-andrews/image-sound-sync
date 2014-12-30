@@ -29,7 +29,7 @@ public class PreviewPlayer implements Runnable, LineListener {
 			while (! playerStopped) {
 				int audioFrame = data.audioFile().getFrameForRawAudioPosition(audioPlayer.getAudioFrame());
 				if (audioFrame != lastAudioFrame) {
-					data.setSelectedAudioFrame(audioFrame); // TODO: Correct for sampling
+					data.setSelectedAudioFrame(audioFrame);
 					lastAudioFrame = audioFrame;
 				}
 				
