@@ -25,12 +25,12 @@ public class AudioPanel extends JPanel implements ImageSoundListener {
 		gbc.weighty=0.9;
 		gbc.fill = GridBagConstraints.BOTH;
 		
-		rawWaveform = new WaveformPanel(new Color(0,0,200));
+		rawWaveform = new WaveformPanel(new Color(0,0,170));
 		add(rawWaveform,gbc);
 		
 		gbc.gridy++;
 		
-		normalisedWaveform = new WaveformPanel(new Color(0,200,0));
+		normalisedWaveform = new WaveformPanel(new Color(0,140,0));
 		add(normalisedWaveform,gbc);	
 	}
 	
