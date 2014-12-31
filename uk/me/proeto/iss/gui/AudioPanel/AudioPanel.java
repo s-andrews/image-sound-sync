@@ -1,9 +1,11 @@
 package uk.me.proeto.iss.gui.AudioPanel;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
@@ -18,6 +20,7 @@ public class AudioPanel extends JPanel implements ImageSoundListener {
 	private WaveformPanel rawWaveform;
 	private WaveformPanel normalisedWaveform;
 	private JSlider smoothingSlider;
+	private JSlider minGapSlider;
 	private ImageSoundData data;
 	
 	public AudioPanel (ImageSoundData data) {
@@ -45,6 +48,10 @@ public class AudioPanel extends JPanel implements ImageSoundListener {
 		gbc.gridheight=2;
 		gbc.weightx=0.01;
 		
+		JPanel smoothingSliderPanel = new JPanel();
+		smoothingSliderPanel.setLayout(new BorderLayout());
+		smoothingSliderPanel.add(new JLabel("Smoothing",JLabel.CENTER),BorderLayout.NORTH);
+		
 		smoothingSlider = new JSlider(JSlider.VERTICAL,0, 50, AudioFile.SAMPLES_PER_SECOND);
 		smoothingSlider.addChangeListener(new ChangeListener() {
 			
@@ -54,7 +61,33 @@ public class AudioPanel extends JPanel implements ImageSoundListener {
 			}
 		});
 		
-		add(smoothingSlider,gbc);
+		smoothingSliderPanel.add(smoothingSlider,BorderLayout.CENTER);
+		
+		add(smoothingSliderPanel,gbc);
+
+		
+		gbc.gridx=3;
+		gbc.gridy=1;
+		gbc.gridheight=2;
+		gbc.weightx=0.01;
+		
+		JPanel minGapSliderPanel = new JPanel();
+		minGapSliderPanel.setLayout(new BorderLayout());
+		minGapSliderPanel.add(new JLabel("Min Gap",JLabel.CENTER),BorderLayout.NORTH);
+		
+		minGapSlider = new JSlider(JSlider.VERTICAL,0, 25, 0);
+		minGapSlider.addChangeListener(new ChangeListener() {
+			
+			public void stateChanged(ChangeEvent ce) {
+				System.out.println("Set minGap to "+minGapSlider.getValue());
+//				AudioPanel.this.data.setSmoothing(smoothingSlider.getValue());
+			}
+		});
+		
+		minGapSliderPanel.add(minGapSlider,BorderLayout.CENTER);
+		
+		add(minGapSliderPanel,gbc);
+
 		
 	}
 	
