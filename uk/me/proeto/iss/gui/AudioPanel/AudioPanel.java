@@ -75,7 +75,7 @@ public class AudioPanel extends JPanel implements ImageSoundListener {
 		minGapSliderPanel.setLayout(new BorderLayout());
 		minGapSliderPanel.add(new JLabel("Min Gap",JLabel.CENTER),BorderLayout.NORTH);
 		
-		minGapSlider = new JSlider(JSlider.VERTICAL,0, 25, 0);
+		minGapSlider = new JSlider(JSlider.VERTICAL,0, 50, 0);
 		minGapSlider.addChangeListener(new ChangeListener() {
 			
 			public void stateChanged(ChangeEvent ce) {

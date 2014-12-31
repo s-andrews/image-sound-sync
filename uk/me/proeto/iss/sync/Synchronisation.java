@@ -68,7 +68,7 @@ public class Synchronisation implements ImageSoundListener {
 		// Make up new data structures to hold the results of the synchronisation
 		imageIndices = new int [data.audioFile().rawSampleData().length];
 		soundIndices = new int [data.imageSet().files().length];
-		
+				
 		// Now we need to get the normalised sound data
 		double [] audioData = data.audioFile().smoothedSampleData();
 		
@@ -94,7 +94,6 @@ public class Synchronisation implements ImageSoundListener {
 		
 		System.out.println("Min gap per segment is "+minGapThisSegment+" from optimal gap "+optimalAudioGap);
 		
-		
 		// We now need to make up a set of indices for the range we're looking at
 		// and will sort these by their smoothed values.
 		
@@ -113,11 +112,43 @@ public class Synchronisation implements ImageSoundListener {
 		//
 		// TODO: Add some rules to stop a large loud duration from dominating.
 		
+		// To stop several sudden transitions we check which slots we've already
+		// assigned and then don't assign to those which are too close.
+		boolean [] usedSlots = new boolean[indicesToSort.length+1];
+		for (int i=0;i<usedSlots.length;i++) {
+			usedSlots[i] = false;
+		}
+		
 		int [] transitionFrames = new int[(endVideoFrame-startVideoFrame)+1];
 		
+		// The first transition always happens at the first audio frame.
 		transitionFrames[0] = startAudioFrame;
+		for (int i=0;i<=minGapThisSegment;i++) {
+			usedSlots[0+i] = true;
+		}
+
+		int currentSortedIndex = 0;
 		for (int i=1;i<transitionFrames.length;i++) {
-			transitionFrames[i] = indicesToSort[i-1];
+
+			// We go through to find the next available audio frame
+			for (int j=currentSortedIndex;j<indicesToSort.length;j++) {
+				if (usedSlots[indicesToSort[j]]) {
+					// This slots isn't available as it's too close to one
+					// which has already been used.
+					System.out.println("Skipping "+indicesToSort[j]+" as it's too close to a used slot");
+					currentSortedIndex++;
+					continue;
+				}
+				// We can use this
+				transitionFrames[i] = indicesToSort[j];
+
+				for (int k=0-minGapThisSegment;k<=minGapThisSegment;k++) {
+						usedSlots[indicesToSort[j]+k] = true;
+				}
+				currentSortedIndex++;
+				break;
+			}
+			
 		}
 		
 		Arrays.sort(transitionFrames);
@@ -125,7 +156,7 @@ public class Synchronisation implements ImageSoundListener {
 		// Finally we can assign the frames to their sound slots.
 		for (int i=0;i<transitionFrames.length;i++) {
 			soundIndices[startVideoFrame+i] = transitionFrames[i];
-//			System.out.println("Transition to frame "+(startVideoFrame+i)+" happens at "+transitionFrames[i]);
+			System.out.println("Transition to frame "+(startVideoFrame+i)+" happens at "+transitionFrames[i]);
 		}
 		
 		for (int i=1;i<soundIndices.length;i++) {
