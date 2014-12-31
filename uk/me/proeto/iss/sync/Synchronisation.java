@@ -80,11 +80,7 @@ public class Synchronisation implements ImageSoundListener {
 		}
 		
 		Arrays.sort(indicesToSort,new doubleValueComparator(audioData));
-		
-		for (int i=20;i<31;i++) {
-			System.out.println("Sorted "+i+" index="+indicesToSort[i]+" value="+audioData[indicesToSort[i]]);
-		}
-		
+				
 		// Now we take the top hits from the sorted data as the positions we're going
 		// to do our transitions.  The first transition will always be at the first
 		// frame of this region, and then it's done by the largest effect.

@@ -28,7 +28,7 @@ public class PreviewPlayer implements Runnable, LineListener {
 			
 			while (! playerStopped) {
 				int audioFrame = data.audioFile().getFrameForRawAudioPosition(audioPlayer.getAudioFrame());
-				if (audioFrame != lastAudioFrame) {
+				if (audioFrame != lastAudioFrame && audioFrame >=0) {
 					data.setSelectedAudioFrame(audioFrame);
 					lastAudioFrame = audioFrame;
 				}
@@ -39,7 +39,7 @@ public class PreviewPlayer implements Runnable, LineListener {
 			
 		}
 		catch (Exception e) {
-			System.err.println(e.getLocalizedMessage());
+			e.printStackTrace();
 		}
 		
 		
@@ -47,7 +47,7 @@ public class PreviewPlayer implements Runnable, LineListener {
 	}
 
 	public void update(LineEvent le) {
-		System.out.println(le);
+//		System.out.println(le);
 		
 		if (le.getType() == LineEvent.Type.STOP) {
 			playerStopped = true;
