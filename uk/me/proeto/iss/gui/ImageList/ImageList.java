@@ -58,6 +58,8 @@ public class ImageList extends JPanel implements ImageSoundListener, ListSelecti
 		data.setSelectedVideoFrame(table.getSelectedRow());
 	}
 
+	public void smoothingUpdated(ImageSoundData data) {}
+
 	
 	
 }

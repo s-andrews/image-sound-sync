@@ -5,16 +5,23 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
 import javax.swing.JPanel;
+import javax.swing.JSlider;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import uk.me.proeto.iss.ImageSoundData;
 import uk.me.proeto.iss.ImageSoundListener;
+import uk.me.proeto.iss.sound.AudioFile;
 
 public class AudioPanel extends JPanel implements ImageSoundListener {
 
 	private WaveformPanel rawWaveform;
 	private WaveformPanel normalisedWaveform;
+	private JSlider smoothingSlider;
+	private ImageSoundData data;
 	
 	public AudioPanel (ImageSoundData data) {
+		this.data = data;
 		data.addListener(this);
 		setLayout(new GridBagLayout());
 		
@@ -31,7 +38,24 @@ public class AudioPanel extends JPanel implements ImageSoundListener {
 		gbc.gridy++;
 		
 		normalisedWaveform = new WaveformPanel(new Color(0,140,0));
-		add(normalisedWaveform,gbc);	
+		add(normalisedWaveform,gbc);
+		
+		gbc.gridx=2;
+		gbc.gridy=1;
+		gbc.gridheight=2;
+		gbc.weightx=0.01;
+		
+		smoothingSlider = new JSlider(JSlider.VERTICAL,0, 50, AudioFile.SAMPLES_PER_SECOND);
+		smoothingSlider.addChangeListener(new ChangeListener() {
+			
+			public void stateChanged(ChangeEvent ce) {
+				System.out.println("Set smoothing to "+smoothingSlider.getValue());
+				AudioPanel.this.data.setSmoothing(smoothingSlider.getValue());
+			}
+		});
+		
+		add(smoothingSlider,gbc);
+		
 	}
 	
 	public void newAudioFile(ImageSoundData data) {
@@ -58,6 +82,10 @@ public class AudioPanel extends JPanel implements ImageSoundListener {
 	public void videoFrameSelected(ImageSoundData data, int frame) {
 		int audioFrame = data.synchronisation().getSoundFrameForImageIndex(frame);
 		audioFrameSelected(data, audioFrame);
+	}
+
+	public void smoothingUpdated(ImageSoundData data) {
+		normalisedWaveform.setSamples(data.audioFile().smoothedSampleData());
 	}
 	
 

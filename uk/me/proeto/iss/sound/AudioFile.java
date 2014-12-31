@@ -62,25 +62,29 @@ public class AudioFile {
 		}
 		
 	}
-	
+		
 	public int getFrameForRawAudioPosition (int position) {
 		return (position/bufferSize);
+	}
+	
+	public int smoothingWindow () {
+		return smoothingWindow;
 	}
 	
 	public void setSmoothing (int smoothingWindow) {
 		this.smoothingWindow = smoothingWindow;
 		
 		for (int i=0;i<rawSamples.length;i++) {
-			int startIndex = i-(smoothingWindow/2);
+			int startIndex = i-smoothingWindow;
 			if (startIndex < 0) startIndex = 0;
-			int endIndex = startIndex+smoothingWindow;
+			int endIndex = i+smoothingWindow;
 			if (endIndex >= rawSamples.length) endIndex = rawSamples.length-1;
 			
 			double total = 0;
 			int count = 0;
 			
 			for (int j=startIndex;j<endIndex;j++) {
-				if (j==i) continue;
+//				if (j==i) continue;
 				total += rawSamples[j];
 				++count;
 			}
@@ -89,15 +93,15 @@ public class AudioFile {
 		
 		// We will now have some negative values, which we need to remove to keep
 		// everything on a positive scale.
-		double minValue = Double.MAX_VALUE;
-		
-		for (int i=0;i<smoothedSamples.length;i++) {
-			if (smoothedSamples[i] < minValue) minValue = smoothedSamples[i];
-		}
-
-		for (int i=0;i<smoothedSamples.length;i++) {
-			smoothedSamples[i] -= minValue;
-		}
+//		double minValue = Double.MAX_VALUE;
+//		
+//		for (int i=0;i<smoothedSamples.length;i++) {
+//			if (smoothedSamples[i] < minValue) minValue = smoothedSamples[i];
+//		}
+//
+//		for (int i=0;i<smoothedSamples.length;i++) {
+//			smoothedSamples[i] -= minValue;
+//		}
 
 	}
 	

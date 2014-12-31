@@ -79,7 +79,13 @@ public class WaveformPanel extends JPanel {
 		g.setColor(Color.WHITE);
 		g.fillRect(getX(selectedAudioFrame)-2, 0, 5, getHeight());
 
-
+		// See if we can highlight any transitions
+		if (transitions != null) {
+			g.setColor(DARK_RED);
+			for (int i=0;i<transitions.length;i++) {
+				g.drawLine(getX(transitions[i]), 0, getX(transitions[i]), getHeight());
+			}
+		}
 		
 		g.setColor(colour);
 		
@@ -103,13 +109,6 @@ public class WaveformPanel extends JPanel {
 			
 		}
 		
-		// See if we can highlight any transitions
-		if (transitions != null) {
-			g.setColor(DARK_RED);
-			for (int i=0;i<transitions.length;i++) {
-				g.drawLine(getX(transitions[i]), 0, getX(transitions[i]), getHeight());
-			}
-		}
 		
 		
 		

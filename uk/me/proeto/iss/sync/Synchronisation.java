@@ -46,7 +46,6 @@ public class Synchronisation implements ImageSoundListener {
 	}
 
 	private void generateSynchronisation () {
-		// TODO: Actually work out the correspondance between images and sound.
 		
 		// See if we actually have both image and audio data
 		if (data.audioFile() == null || data.imageSet() == null) {
@@ -77,9 +76,14 @@ public class Synchronisation implements ImageSoundListener {
 		
 		for (int i=startAudioFrame+1;i<=endAudioFrame;i++) {
 			indicesToSort[i-(startAudioFrame+1)] = i;
+//			System.out.println("Index "+(i-(startAudioFrame+1))+" is "+i);
 		}
 		
 		Arrays.sort(indicesToSort,new doubleValueComparator(audioData));
+		
+		for (int i=20;i<31;i++) {
+			System.out.println("Sorted "+i+" index="+indicesToSort[i]+" value="+audioData[indicesToSort[i]]);
+		}
 		
 		// Now we take the top hits from the sorted data as the positions we're going
 		// to do our transitions.  The first transition will always be at the first
@@ -99,7 +103,7 @@ public class Synchronisation implements ImageSoundListener {
 		// Finally we can assign the frames to their sound slots.
 		for (int i=0;i<transitionFrames.length;i++) {
 			soundIndices[startVideoFrame+i] = transitionFrames[i];
-			System.out.println("Transition to frame "+(startVideoFrame+i)+" happens at "+transitionFrames[i]);
+//			System.out.println("Transition to frame "+(startVideoFrame+i)+" happens at "+transitionFrames[i]);
 		}
 		
 		for (int i=1;i<soundIndices.length;i++) {
@@ -135,6 +139,10 @@ public class Synchronisation implements ImageSoundListener {
 	public void audioFrameSelected(ImageSoundData data, int frame) {}
 
 	public void videoFrameSelected(ImageSoundData data, int frame) {}
+
+	public void smoothingUpdated(ImageSoundData data) {
+		generateSynchronisation();
+	}
 
 	private class doubleValueComparator implements Comparator<Integer> {
 	

@@ -37,6 +37,22 @@ public class ImageSoundData {
 			en.nextElement().audioFrameSelected(this, index);
 		}
 	}
+	
+	public void setSmoothing (int smoothing) {
+		if (audioFile != null) {
+			audioFile.setSmoothing(smoothing);
+			Enumeration<ImageSoundListener> en = listeners.elements();
+			while (en.hasMoreElements()) {
+				en.nextElement().smoothingUpdated(this);
+			}
+			if (imageSet != null) {
+				en = listeners.elements();
+				while (en.hasMoreElements()) {
+					en.nextElement().transitionsUpdated(this);;
+				}
+			}
+		}
+	}
 
 	public void setImageSet (ImageSet imageSet) {
 		this.imageSet = imageSet;

@@ -71,4 +71,7 @@ public class ImagePanel extends JPanel implements ImageSoundListener {
 		currentImageIndex = frame;
 		repaint();
 	}
+
+
+	public void smoothingUpdated(ImageSoundData data) {}
 }
