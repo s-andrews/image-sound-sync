@@ -14,16 +14,16 @@ public class ImageSoundData {
 	private Vector<ImageSoundListener> listeners = new Vector<ImageSoundListener>();
 	private Synchronisation synchronisation = new Synchronisation(this);
 
-	
+
 	public void setAudioFile (AudioFile audioFile) {
 		this.audioFile = audioFile;
-		
+
 		Enumeration<ImageSoundListener> en = listeners.elements();
 		while (en.hasMoreElements()) {
 			en.nextElement().newAudioFile(this);
 		}
 	}
-	
+
 	public void setSelectedVideoFrame (int index) {
 		Enumeration<ImageSoundListener> en = listeners.elements();
 		while (en.hasMoreElements()) {
@@ -37,7 +37,7 @@ public class ImageSoundData {
 			en.nextElement().audioFrameSelected(this, index);
 		}
 	}
-	
+
 	public void setSmoothing (int smoothing) {
 		if (audioFile != null) {
 			audioFile.setSmoothing(smoothing);
@@ -48,22 +48,33 @@ public class ImageSoundData {
 			if (imageSet != null) {
 				en = listeners.elements();
 				while (en.hasMoreElements()) {
-					en.nextElement().transitionsUpdated(this);;
+					en.nextElement().transitionsUpdated(this);
 				}
+			}
+		}
+	}
+
+	public void setMinGap (int minGap) {
+		synchronisation.setMinGap(minGap);
+		
+		if (imageSet != null) {
+			Enumeration<ImageSoundListener> en = listeners.elements();
+			while (en.hasMoreElements()) {
+				en.nextElement().transitionsUpdated(this);
 			}
 		}
 	}
 
 	public void setImageSet (ImageSet imageSet) {
 		this.imageSet = imageSet;
-		
+
 		Enumeration<ImageSoundListener> en = listeners.elements();
 		while (en.hasMoreElements()) {
 			en.nextElement().newImageSet(this);
 		}
 	}
-	
-	
+
+
 	public void addListener (ImageSoundListener l) {
 		if (l != null && ! listeners.contains(l)) {
 			listeners.add(l);
@@ -74,17 +85,17 @@ public class ImageSoundData {
 			listeners.remove(l);
 		}
 	}
-	
+
 	public AudioFile audioFile () {
 		return audioFile;
 	}
-	
+
 	public ImageSet imageSet () {
 		return imageSet;
 	}
-	
+
 	public Synchronisation synchronisation () {
 		return synchronisation;
 	}
-	
+
 }

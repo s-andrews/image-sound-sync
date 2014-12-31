@@ -25,7 +25,13 @@ public class Synchronisation implements ImageSoundListener {
 	// happens between key frames.
 	private Vector<KeyFrame> keyFrames = new Vector<KeyFrame>();
 	
+	// So we don't get a rush of images at the same point we can set a minimum gap
+	// between frames.  This isn't an absolute value, but rather a percentage of
+	// the minimum theoretical time which would exist between frames if they were
+	// all spaced evenly
 	
+	private int minGap = 0;
+
 	public Synchronisation (ImageSoundData data) {
 		this.data = data;
 		data.addListener(this);
@@ -45,6 +51,11 @@ public class Synchronisation implements ImageSoundListener {
 		return -1;
 	}
 
+	public void setMinGap (int minGap) {
+		this.minGap = minGap;
+		generateSynchronisation();
+	}
+	
 	private void generateSynchronisation () {
 		
 		// See if we actually have both image and audio data
@@ -68,6 +79,21 @@ public class Synchronisation implements ImageSoundListener {
 		
 		int startVideoFrame = 0;
 		int endVideoFrame = soundIndices.length-1;
+		
+		// We need to work out the minimum number of frames we have to put
+		// between adjacent transitions.
+		
+		// First we need to work out the optimal number of audio frames between
+		// images if everything was evenly spread.
+		
+		int optimalAudioGap = (endAudioFrame-startAudioFrame)/(endVideoFrame-startVideoFrame);
+		
+		// We now take a percentage of this to be the minimum gap
+		
+		int minGapThisSegment = (optimalAudioGap*minGap)/100;
+		
+		System.out.println("Min gap per segment is "+minGapThisSegment+" from optimal gap "+optimalAudioGap);
+		
 		
 		// We now need to make up a set of indices for the range we're looking at
 		// and will sort these by their smoothed values.

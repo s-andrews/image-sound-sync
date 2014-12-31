@@ -80,7 +80,7 @@ public class AudioPanel extends JPanel implements ImageSoundListener {
 			
 			public void stateChanged(ChangeEvent ce) {
 				System.out.println("Set minGap to "+minGapSlider.getValue());
-//				AudioPanel.this.data.setSmoothing(smoothingSlider.getValue());
+				AudioPanel.this.data.setMinGap(minGapSlider.getValue());
 			}
 		});
 		
