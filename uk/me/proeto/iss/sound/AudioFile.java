@@ -12,7 +12,7 @@ public class AudioFile {
 	private File file = null;
 	private double [] rawSamples = null;
 	private double [] smoothedSamples = null;
-	private int smoothingWindow;
+	private int smoothingWindow = -1;
 	private int bufferSize;
 	
 	public AudioFile (File file) throws IOException {
@@ -20,7 +20,7 @@ public class AudioFile {
 		
 		WavFile wavFile = WavFile.openWavFile(file);
 		
-		wavFile.display();
+//		wavFile.display();
 		
 		long sampleRate = wavFile.getSampleRate();
 		
@@ -33,16 +33,15 @@ public class AudioFile {
 		
 		bufferSize = (int)(sampleRate/SAMPLES_PER_SECOND);
 		
-		System.out.println("Buffer size = "+bufferSize);
-		
-		System.out.println("Sample length is "+((wavFile.getNumFrames()/bufferSize)/SAMPLES_PER_SECOND)+" seconds");
+//		System.out.println("Buffer size = "+bufferSize);	
+//		System.out.println("Sample length is "+((wavFile.getNumFrames()/bufferSize)/SAMPLES_PER_SECOND)+" seconds");
 		
 		double [] buffer = new double[bufferSize*wavFile.getNumChannels()];
 				
 		rawSamples = new double[(int)(wavFile.getNumFrames()/wavFile.getSampleRate())*SAMPLES_PER_SECOND];
 		smoothedSamples = new double[rawSamples.length];
 		
-		System.out.println("Samples to read is "+rawSamples.length);
+//		System.out.println("Samples to read is "+rawSamples.length);
 		
 		for (int i=0;i<rawSamples.length;i++) {
 			wavFile.readFrames(buffer, bufferSize);
@@ -53,13 +52,13 @@ public class AudioFile {
 			}
 			
 			rawSamples[i] = max;
-			
-			setSmoothing(SAMPLES_PER_SECOND);
-			
+						
 //			System.out.println("Max value for sample "+i+" is "+rawSamples[i]);
-			
-			
+				
 		}
+
+		setSmoothing(SAMPLES_PER_SECOND);
+
 		
 	}
 		
@@ -72,6 +71,9 @@ public class AudioFile {
 	}
 	
 	public void setSmoothing (int smoothingWindow) {
+		if (smoothingWindow == this.smoothingWindow) {			
+			return;
+		}
 		this.smoothingWindow = smoothingWindow;
 		
 		for (int i=0;i<rawSamples.length;i++) {
@@ -83,25 +85,24 @@ public class AudioFile {
 			double total = 0;
 			int count = 0;
 			
-			for (int j=startIndex;j<endIndex;j++) {
+			for (int j=startIndex;j<=endIndex;j++) {
 //				if (j==i) continue;
 				total += rawSamples[j];
 				++count;
 			}
-			smoothedSamples[i] = rawSamples[i] - (total/count);
+			
+			// If we're not smoothing then we don't want to do the subtraction
+			// otherwise everything ends up at zero.
+			if (smoothingWindow == 0) {
+				smoothedSamples[i] = rawSamples[i];
+			}
+			else {
+				smoothedSamples[i] = rawSamples[i] - (total/count);
+			}
 		}
 		
-		// We will now have some negative values, which we need to remove to keep
-		// everything on a positive scale.
-//		double minValue = Double.MAX_VALUE;
-//		
-//		for (int i=0;i<smoothedSamples.length;i++) {
-//			if (smoothedSamples[i] < minValue) minValue = smoothedSamples[i];
-//		}
-//
-//		for (int i=0;i<smoothedSamples.length;i++) {
-//			smoothedSamples[i] -= minValue;
-//		}
+		// We used to removed negative values, but actually it's easier to see what's
+		// going on if we leave these in place.
 
 	}
 	

@@ -51,7 +51,7 @@ public class ImageSoundSyncMenu extends JMenuBar implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 
 		String command = e.getActionCommand();
-		
+				
 		if (command.equals("open_audio")) {
 			try {
 				application.readAudio();
