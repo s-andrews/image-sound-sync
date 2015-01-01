@@ -2,29 +2,31 @@ package uk.me.proeto.iss.gui.ImageList;
 
 import javax.swing.table.AbstractTableModel;
 
-import uk.me.proeto.iss.images.ImageSet;
+import uk.me.proeto.iss.ImageSoundData;
+import uk.me.proeto.iss.ImageSoundListener;
 
-public class ImageSetTableModel extends AbstractTableModel {
+public class ImageSetTableModel extends AbstractTableModel implements ImageSoundListener {
 
-	private ImageSet imageSet = null;
+	private ImageSoundData data = null;
 	
-	public void setImages (ImageSet imageSet) {
-		this.imageSet = imageSet;
-		fireTableDataChanged();
+	public ImageSetTableModel (ImageSoundData data) {
+		this.data = data;
+		data.addListener(this);
 	}
-	
+		
 	public int getColumnCount() {
-		return 2;
+		return 3;
 	}
 
 	public int getRowCount() {
-		if (imageSet == null) return 0;
-		return (imageSet.images().length);
+		if (data.imageSet() == null) return 0;
+		return (data.imageSet().files().length);
 	}
 
 	public String getColumnName (int col) {
 		if (col == 0) return "Index";
-		if (col == 1) return "File";
+		else if (col == 1) return "File";
+		else if (col == 2) return "Transition Time";
 		return null;
 	}
 	
@@ -33,9 +35,32 @@ public class ImageSetTableModel extends AbstractTableModel {
 			return new Integer(row);
 		}
 		else if (col == 1) {
-			return imageSet.files()[row].getName();
+			return data.imageSet().files()[row].getName();
 		}
+		else if (col == 2) {
+			if (data.audioFile() == null) return 0;
+			return data.synchronisation().getSoundFrameForImageIndex(row);
+		}
+
 		return null;
 	}
+
+	public void newAudioFile(ImageSoundData data) {}
+
+	public void newImageSet(ImageSoundData data) {
+		fireTableDataChanged();
+	}
+
+	public void transitionsUpdated(ImageSoundData data) {
+		fireTableDataChanged();		
+	}
+
+	public void smoothingUpdated(ImageSoundData data) {
+		
+	}
+
+	public void audioFrameSelected(ImageSoundData data, int frame) {}
+
+	public void videoFrameSelected(ImageSoundData data, int frame) {}
 
 }

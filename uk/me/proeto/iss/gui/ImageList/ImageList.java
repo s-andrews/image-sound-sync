@@ -22,22 +22,19 @@ public class ImageList extends JPanel implements ImageSoundListener, ListSelecti
 	public ImageList (ImageSoundData data) {
 		data.addListener(this);
 		this.data = data;
-		model = new ImageSetTableModel();
+		model = new ImageSetTableModel(data);
 		table = new JTable(model);
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		table.getSelectionModel().addListSelectionListener(this);
 		
 		setLayout(new BorderLayout());
 		add(new JScrollPane(table),BorderLayout.CENTER);
-		
 	}
 	
 	
 	public void newAudioFile(ImageSoundData data) {}
 
-	public void newImageSet(ImageSoundData data) {
-		model.setImages(data.imageSet());
-	}
+	public void newImageSet(ImageSoundData data) {}
 
 	public void transitionsUpdated(ImageSoundData data) {}
 
