@@ -3,6 +3,7 @@ package uk.me.proeto.iss.gui.ImageList;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -23,6 +24,10 @@ public class ImageList extends JPanel implements ImageSoundListener, ListSelecti
 	private int selectedIndex = -1;
 	private ImageSoundData data;
 	
+	private JButton addButton;
+	private JButton removeButton;
+
+		
 	public ImageList (ImageSoundData data) {
 		data.addListener(this);
 		this.data = data;
@@ -57,13 +62,28 @@ public class ImageList extends JPanel implements ImageSoundListener, ListSelecti
 
 		add(new JLabel("Key Frames",JLabel.CENTER),gbc);
 
-		// TODO: Add key frame table, and button to add a key frame
-
 		gbc.gridy++;
 		gbc.weighty=0.66;
 		
 		add(new JScrollPane(keyFrameTable),gbc);
 
+		gbc.gridy++;
+		gbc.weighty=0.01;
+
+		JPanel buttonPanel = new JPanel();
+		
+		addButton = new JButton("Add");
+		addButton.setActionCommand("add_key_frame");
+		buttonPanel.add(addButton);
+		
+		removeButton = new JButton("Remove");
+		removeButton.setActionCommand("remove_key_frame");
+		removeButton.setEnabled(false);
+		buttonPanel.add(removeButton);
+		
+		add(buttonPanel,gbc);
+		
+		
 	}
 	
 	
