@@ -44,6 +44,11 @@ public class Synchronisation implements ImageSoundListener {
 		return -1;
 	}
 	
+	public void addKeyFrame (KeyFrame keyFrame) {
+		keyFrames.add(keyFrame);
+		generateSynchronisation();
+	}
+	
 	public KeyFrame [] keyFrames () {
 		return keyFrames.toArray(new KeyFrame [0]);
 	}

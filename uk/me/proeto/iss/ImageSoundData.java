@@ -5,6 +5,7 @@ import java.util.Vector;
 
 import uk.me.proeto.iss.images.ImageSet;
 import uk.me.proeto.iss.sound.AudioFile;
+import uk.me.proeto.iss.sync.KeyFrame;
 import uk.me.proeto.iss.sync.Synchronisation;
 
 public class ImageSoundData {
@@ -21,6 +22,14 @@ public class ImageSoundData {
 		Enumeration<ImageSoundListener> en = listeners.elements();
 		while (en.hasMoreElements()) {
 			en.nextElement().newAudioFile(this);
+		}
+	}
+	
+	public void addKeyFrame (KeyFrame keyFrame) {
+		synchronisation.addKeyFrame(keyFrame);
+		Enumeration<ImageSoundListener> en = listeners.elements();
+		while (en.hasMoreElements()) {
+			en.nextElement().transitionsUpdated(this);
 		}
 	}
 

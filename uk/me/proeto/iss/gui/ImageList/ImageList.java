@@ -2,6 +2,8 @@ package uk.me.proeto.iss.gui.ImageList;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -14,8 +16,9 @@ import javax.swing.event.ListSelectionListener;
 
 import uk.me.proeto.iss.ImageSoundData;
 import uk.me.proeto.iss.ImageSoundListener;
+import uk.me.proeto.iss.gui.KeyFrameEditDialog;
 
-public class ImageList extends JPanel implements ImageSoundListener, ListSelectionListener {
+public class ImageList extends JPanel implements ImageSoundListener, ListSelectionListener, ActionListener {
 
 	private ImageSetTableModel imageModel;
 	private JTable imageTable;
@@ -74,11 +77,13 @@ public class ImageList extends JPanel implements ImageSoundListener, ListSelecti
 		
 		addButton = new JButton("Add");
 		addButton.setActionCommand("add_key_frame");
+		addButton.addActionListener(this);
 		buttonPanel.add(addButton);
 		
 		removeButton = new JButton("Remove");
 		removeButton.setActionCommand("remove_key_frame");
 		removeButton.setEnabled(false);
+		removeButton.addActionListener(this);
 		buttonPanel.add(removeButton);
 		
 		add(buttonPanel,gbc);
@@ -106,6 +111,9 @@ public class ImageList extends JPanel implements ImageSoundListener, ListSelecti
 	}
 
 
+	public void smoothingUpdated(ImageSoundData data) {}
+
+
 	public void valueChanged(ListSelectionEvent lse) {
 		if (lse.getSource().equals(imageTable)) {
 			data.setSelectedVideoFrame(imageTable.getSelectedRow());
@@ -118,7 +126,14 @@ public class ImageList extends JPanel implements ImageSoundListener, ListSelecti
 		}
 	}
 
-	public void smoothingUpdated(ImageSoundData data) {}
+	public void actionPerformed(ActionEvent ae) {
+		if (ae.getActionCommand().equals("add_key_frame")) {
+			KeyFrameEditDialog ked = new KeyFrameEditDialog(data);
+			if (ked.keyFrame() != null) {
+				data.addKeyFrame(ked.keyFrame());
+			}
+		}
+	}
 
 	
 	
