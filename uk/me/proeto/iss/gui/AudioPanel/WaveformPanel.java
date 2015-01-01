@@ -3,21 +3,28 @@ package uk.me.proeto.iss.gui.AudioPanel;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.JPanel;
 
-public class WaveformPanel extends JPanel {
+import uk.me.proeto.iss.ImageSoundData;
+
+public class WaveformPanel extends JPanel implements MouseListener {
 
 	private double [] samples = new double [0];
 	private int [] transitions = null;
 	private double max = 1;
 	private Color colour;
 	private int selectedAudioFrame = 0;
+	private ImageSoundData data;
 	
 	private static final Color DARK_RED = new Color(180,0,0);
 	
-	public WaveformPanel (Color colour) {
+	public WaveformPanel (Color colour, ImageSoundData data) {
+		this.data = data;
 		this.colour = colour;
+		addMouseListener(this);
 	}
 	
 	public void setSamples (double [] samples) {
@@ -41,6 +48,11 @@ public class WaveformPanel extends JPanel {
 	
 	private int getX (int bin) {
 		return (int)((getWidth()/(double)samples.length)*bin);
+	}
+	
+	private int getXFrame (int position) {
+		return (int)((samples.length/(double)getWidth())*position);
+		
 	}
 	
 	private int getYTop (double value) {
@@ -113,5 +125,18 @@ public class WaveformPanel extends JPanel {
 		
 		
 	}
+
+	public void mouseClicked(MouseEvent me) {
+		int audioBin = getXFrame(me.getX());
+		data.setSelectedAudioFrame(audioBin);
+	}
+
+	public void mouseEntered(MouseEvent e) {}
+
+	public void mouseExited(MouseEvent e) {}
+
+	public void mousePressed(MouseEvent e) {}
+
+	public void mouseReleased(MouseEvent e) {}
 	
 }
