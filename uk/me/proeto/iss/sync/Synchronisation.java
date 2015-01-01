@@ -44,6 +44,10 @@ public class Synchronisation implements ImageSoundListener {
 		return -1;
 	}
 	
+	public KeyFrame [] keyFrames () {
+		return keyFrames.toArray(new KeyFrame [0]);
+	}
+	
 	public int getSoundFrameForImageIndex (int imageIndex) {
 		if (imageIndex >=0 && imageIndex < soundIndices.length) {
 			return soundIndices[imageIndex];

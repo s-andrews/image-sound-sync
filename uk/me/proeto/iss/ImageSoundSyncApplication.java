@@ -42,7 +42,8 @@ public class ImageSoundSyncApplication extends JFrame {
 		setLocationRelativeTo(null);
 				
 		setVisible(true);
-		leftRightPane.setDividerLocation(0.5);
+		leftRightPane.setDividerLocation(0.65);
+		topBottomPane.setDividerLocation(0.25);
 
 	}
 	

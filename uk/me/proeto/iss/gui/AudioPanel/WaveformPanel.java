@@ -68,7 +68,7 @@ public class WaveformPanel extends JPanel implements MouseListener {
 	}
 	
 	public Dimension getPreferredSize () {
-		return new Dimension(1000,120);
+		return new Dimension(1000,150);
 	}
 	
 	public void paint (Graphics g) {
