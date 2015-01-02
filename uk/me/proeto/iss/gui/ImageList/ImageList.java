@@ -115,10 +115,10 @@ public class ImageList extends JPanel implements ImageSoundListener, ListSelecti
 
 
 	public void valueChanged(ListSelectionEvent lse) {
-		if (lse.getSource().equals(imageTable)) {
+		if (lse.getSource().equals(imageTable.getSelectionModel())) {
 			data.setSelectedVideoFrame(imageTable.getSelectedRow());
 		}
-		else if (lse.getSource().equals(keyFrameTable)) {
+		else if (lse.getSource().equals(keyFrameTable.getSelectionModel())) {
 			data.setSelectedVideoFrame(data.synchronisation().keyFrames()[keyFrameTable.getSelectedRow()].videoFrame());
 		}
 		else {
