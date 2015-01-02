@@ -49,6 +49,12 @@ public class Synchronisation implements ImageSoundListener {
 		generateSynchronisation();
 	}
 
+	public void removeKeyFrame (KeyFrame keyFrame) {
+		keyFrames.remove(keyFrame);
+		generateSynchronisation();
+	}
+
+	
 	public KeyFrame [] keyFrames () {
 		return keyFrames.toArray(new KeyFrame [0]);
 	}
@@ -178,7 +184,9 @@ public class Synchronisation implements ImageSoundListener {
 					transitionFrames[i] = indicesToSort[j];
 
 					for (int k=0-minGapThisSegment;k<=minGapThisSegment;k++) {
-						usedSlots[(indicesToSort[j]-startAudioFrame)+k] = true;
+						if ((indicesToSort[j]-startAudioFrame)+k >=0 && (indicesToSort[j]-startAudioFrame)+k < usedSlots.length) {
+							usedSlots[(indicesToSort[j]-startAudioFrame)+k] = true;
+						}
 					}
 					currentSortedIndex++;
 					break;

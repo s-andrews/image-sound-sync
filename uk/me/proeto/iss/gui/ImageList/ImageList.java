@@ -17,6 +17,7 @@ import javax.swing.event.ListSelectionListener;
 import uk.me.proeto.iss.ImageSoundData;
 import uk.me.proeto.iss.ImageSoundListener;
 import uk.me.proeto.iss.gui.KeyFrameEditDialog;
+import uk.me.proeto.iss.sync.KeyFrame;
 
 public class ImageList extends JPanel implements ImageSoundListener, ListSelectionListener, ActionListener {
 
@@ -115,11 +116,23 @@ public class ImageList extends JPanel implements ImageSoundListener, ListSelecti
 
 
 	public void valueChanged(ListSelectionEvent lse) {
+
+		if (keyFrameTable.getSelectedRow()>=0) {
+			removeButton.setEnabled(true);
+		}
+		else {
+			removeButton.setEnabled(false);			
+		}
+		
 		if (lse.getSource().equals(imageTable.getSelectionModel())) {
-			data.setSelectedVideoFrame(imageTable.getSelectedRow());
+			if (imageTable.getSelectedRow() >=0) {
+				data.setSelectedVideoFrame(imageTable.getSelectedRow());
+			}
 		}
 		else if (lse.getSource().equals(keyFrameTable.getSelectionModel())) {
-			data.setSelectedVideoFrame(data.synchronisation().keyFrames()[keyFrameTable.getSelectedRow()].videoFrame());
+			if (keyFrameTable.getSelectedRow()>=0) {
+				data.setSelectedVideoFrame(data.synchronisation().keyFrames()[keyFrameTable.getSelectedRow()].videoFrame());
+			}
 		}
 		else {
 			throw new IllegalStateException("Unknown source for table change "+lse.getSource());
@@ -133,6 +146,11 @@ public class ImageList extends JPanel implements ImageSoundListener, ListSelecti
 				data.addKeyFrame(ked.keyFrame());
 			}
 		}
+		else if (ae.getActionCommand().equals("remove_key_frame")) {
+			KeyFrame kf = keyFrameModel.getKeyFrameAt(keyFrameTable.getSelectedRow());
+			data.removeKeyFrame(kf);
+		}
+		
 	}
 
 	

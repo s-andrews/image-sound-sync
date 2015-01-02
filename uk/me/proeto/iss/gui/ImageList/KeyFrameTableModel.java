@@ -4,6 +4,7 @@ import javax.swing.table.AbstractTableModel;
 
 import uk.me.proeto.iss.ImageSoundData;
 import uk.me.proeto.iss.ImageSoundListener;
+import uk.me.proeto.iss.sync.KeyFrame;
 
 public class KeyFrameTableModel extends AbstractTableModel implements ImageSoundListener {
 
@@ -44,6 +45,10 @@ public class KeyFrameTableModel extends AbstractTableModel implements ImageSound
 		}
 
 		return null;
+	}
+	
+	public KeyFrame getKeyFrameAt (int row) {
+		return data.synchronisation().keyFrames()[row];
 	}
 
 	public void newAudioFile(ImageSoundData data) {}

@@ -33,6 +33,15 @@ public class ImageSoundData {
 		}
 	}
 
+	public void removeKeyFrame (KeyFrame keyFrame) {
+		synchronisation.removeKeyFrame(keyFrame);
+		Enumeration<ImageSoundListener> en = listeners.elements();
+		while (en.hasMoreElements()) {
+			en.nextElement().transitionsUpdated(this);
+		}
+	}
+
+	
 	public void setSelectedVideoFrame (int index) {
 		Enumeration<ImageSoundListener> en = listeners.elements();
 		while (en.hasMoreElements()) {
