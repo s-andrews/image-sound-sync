@@ -21,6 +21,7 @@ public class ImageSoundSyncApplication extends JFrame {
 
 	private ImageSoundData data = new ImageSoundData();
 	private AudioPanel audioPanel = new AudioPanel(data);
+	private PreviewPlayer previewPlayer = null;
 	
 	public ImageSoundSyncApplication () {
 		
@@ -114,7 +115,13 @@ public class ImageSoundSyncApplication extends JFrame {
 	
 	public void play () {
 		// TODO: Check we have everything we need to actually play.
-		new PreviewPlayer(data);
+		previewPlayer = new PreviewPlayer(data);
+	}
+	
+	public void stop () {
+		if (previewPlayer != null) {
+			previewPlayer.stop();
+		}
 	}
 
 	public static void main(String[] args) {

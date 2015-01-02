@@ -10,6 +10,7 @@ public class PreviewPlayer implements Runnable, LineListener {
 	private ImageSoundData data;
 	private boolean playerStopped = false;
 	private int lastAudioFrame = 0;
+	private boolean forceStop = false;
 	
 	public PreviewPlayer (ImageSoundData data) {
 		
@@ -19,6 +20,10 @@ public class PreviewPlayer implements Runnable, LineListener {
 		t.start();
 	}
 
+	public void stop () {
+		forceStop = true;
+	}
+	
 	@Override
 	public void run() {
 		try {			
@@ -28,6 +33,11 @@ public class PreviewPlayer implements Runnable, LineListener {
 			
 			while (! playerStopped) {
 				int audioFrame = data.audioFile().getFrameForRawAudioPosition(audioPlayer.getAudioFrame());
+				
+				if (forceStop) {
+					audioPlayer.stop();
+				}
+				
 				if (audioFrame != lastAudioFrame && audioFrame >=0) {
 					data.setSelectedAudioFrame(audioFrame);
 					lastAudioFrame = audioFrame;
