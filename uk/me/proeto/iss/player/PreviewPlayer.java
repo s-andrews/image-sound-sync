@@ -11,6 +11,7 @@ public class PreviewPlayer implements Runnable, LineListener {
 	private boolean playerStopped = false;
 	private int lastAudioFrame = 0;
 	private boolean forceStop = false;
+	private boolean pauseFlag = false;
 	
 	public PreviewPlayer (ImageSoundData data) {
 		
@@ -22,6 +23,10 @@ public class PreviewPlayer implements Runnable, LineListener {
 
 	public void stop () {
 		forceStop = true;
+	}
+	
+	public void pause () {
+		pauseFlag = true;
 	}
 	
 	@Override
@@ -36,6 +41,11 @@ public class PreviewPlayer implements Runnable, LineListener {
 				
 				if (forceStop) {
 					audioPlayer.stop();
+				}
+				
+				if (pauseFlag) {
+					audioPlayer.pause();
+					pauseFlag = false;
 				}
 				
 				if (audioFrame != lastAudioFrame && audioFrame >=0) {

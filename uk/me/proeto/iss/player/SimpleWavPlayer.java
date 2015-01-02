@@ -28,6 +28,7 @@ public class SimpleWavPlayer {
 	private Vector<LineListener>listeners = new Vector<LineListener>();
 	private SourceDataLine sourceDataLine = null;
 	private boolean stop = false;
+	private boolean pause = false;
 	
 	public SimpleWavPlayer (File file) throws IOException {
 		inputStream = new FileInputStream(file);
@@ -84,6 +85,13 @@ public class SimpleWavPlayer {
 							sourceDataLine.stop();
 							break;
 						}
+						
+						if (pause) {
+							try {
+								Thread.sleep(20);
+							} catch (InterruptedException e) {}
+							continue;
+						}
 						bytesRead = audioInputStream.read(data, 0, data.length);
 						if (bytesRead >= 0)
 							sourceDataLine.write(data, 0, bytesRead);
@@ -101,6 +109,10 @@ public class SimpleWavPlayer {
 	
 	public void stop () {
 		stop = true;
+	}
+	
+	public void pause () {
+		pause = !pause;
 	}
 
 }

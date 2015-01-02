@@ -34,8 +34,8 @@ public class ImageSoundSyncMenu extends JMenuBar implements ActionListener {
 		
 		add(fileMenu);
 		
-		JMenu playerMenu = new JMenu("View");
-		playerMenu.setMnemonic(KeyEvent.VK_V);
+		JMenu playerMenu = new JMenu("Player");
+		playerMenu.setMnemonic(KeyEvent.VK_P);
 		JMenuItem playerPlay = new JMenuItem("Play");
 		playerPlay.setActionCommand("play");
 		playerPlay.addActionListener(this);
@@ -47,6 +47,12 @@ public class ImageSoundSyncMenu extends JMenuBar implements ActionListener {
 		playerStop.addActionListener(this);
 		playerStop.setMnemonic(KeyEvent.VK_S);
 		playerMenu.add(playerStop);
+
+		JMenuItem playerPause = new JMenuItem("Pause");
+		playerPause.setActionCommand("pause");
+		playerPause.addActionListener(this);
+		playerPause.setMnemonic(KeyEvent.VK_U);
+		playerMenu.add(playerPause);
 
 		
 		add(playerMenu);
@@ -86,6 +92,11 @@ public class ImageSoundSyncMenu extends JMenuBar implements ActionListener {
 		else if (command.equals("stop")) {
 			application.stop();
 		}
+
+		else if (command.equals("pause")) {
+			application.pause();
+		}
+
 		
 		else {
 			throw new IllegalArgumentException("No known menu command '"+command+"'");

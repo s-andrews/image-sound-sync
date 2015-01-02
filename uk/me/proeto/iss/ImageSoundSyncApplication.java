@@ -123,6 +123,13 @@ public class ImageSoundSyncApplication extends JFrame {
 			previewPlayer.stop();
 		}
 	}
+	
+	public void pause () {
+		if (previewPlayer != null) {
+			previewPlayer.pause();
+		}
+
+	}
 
 	public static void main(String[] args) {
 		
