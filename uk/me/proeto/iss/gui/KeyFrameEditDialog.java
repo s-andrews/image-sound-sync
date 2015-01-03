@@ -12,12 +12,14 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import uk.me.proeto.iss.ImageSoundData;
 import uk.me.proeto.iss.gui.AudioPanel.WaveformPanel;
 import uk.me.proeto.iss.sync.KeyFrame;
 
-public class KeyFrameEditDialog extends JDialog implements ActionListener{
+public class KeyFrameEditDialog extends JDialog implements ActionListener, ChangeListener {
 
 	private KeyFrame keyFrame = null;
 	
@@ -25,9 +27,10 @@ public class KeyFrameEditDialog extends JDialog implements ActionListener{
 	private JSlider videoSlider;
 	private WaveformPanel waveform;
 	private ImagePanel imagePanel;
+	private ImageSoundData data;
 	
 	public KeyFrameEditDialog (ImageSoundData data) {
-		
+		this.data = data;
 		setTitle("Add Key Frame");
 		
 		getContentPane().setLayout(new BorderLayout());
@@ -46,6 +49,7 @@ public class KeyFrameEditDialog extends JDialog implements ActionListener{
 		
 		// TODO: Start from the current audio head
 		audioSlider = new JSlider(1,data.audioFile().rawSampleData().length,1);
+		audioSlider.addChangeListener(this);
 		sliderPanel.add(audioSlider,gbc);
 
 		
@@ -53,7 +57,7 @@ public class KeyFrameEditDialog extends JDialog implements ActionListener{
 		gbc.weighty=0.33;
 		
 		waveform = new WaveformPanel(Color.RED, data);
-		waveform.setSamples(data.audioFile().smoothedSampleData());
+		waveform.setSamples(data.audioFile().rawSampleData());
 		sliderPanel.add(waveform,gbc);
 		
 		gbc.gridy++;
@@ -65,6 +69,7 @@ public class KeyFrameEditDialog extends JDialog implements ActionListener{
 
 		// TODO: Start from the current selected video frame
 		videoSlider = new JSlider(1,data.imageSet().files().length,1);
+		videoSlider.addChangeListener(this);
 		
 		sliderPanel.add(videoSlider,gbc);
 		
@@ -96,7 +101,7 @@ public class KeyFrameEditDialog extends JDialog implements ActionListener{
 		
 		getContentPane().add(buttonPanel,BorderLayout.SOUTH);
 		
-		setSize(250,700);
+		setSize(500,700);
 		setLocationRelativeTo(null);
 		setModal(true);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -116,6 +121,16 @@ public class KeyFrameEditDialog extends JDialog implements ActionListener{
 		
 		setVisible(false);
 		dispose();
+	}
+
+	public void stateChanged(ChangeEvent ce) {
+
+		if (ce.getSource().equals(audioSlider)) {
+			waveform.setSelectedFrame(audioSlider.getValue());
+		}
+		else if (ce.getSource().equals(videoSlider)) {
+			imagePanel.videoFrameSelected(data, videoSlider.getValue());
+		}
 	}
 	
 	
