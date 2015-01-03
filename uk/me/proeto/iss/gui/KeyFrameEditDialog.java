@@ -1,15 +1,20 @@
 package uk.me.proeto.iss.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 
 import uk.me.proeto.iss.ImageSoundData;
+import uk.me.proeto.iss.gui.AudioPanel.WaveformPanel;
 import uk.me.proeto.iss.sync.KeyFrame;
 
 public class KeyFrameEditDialog extends JDialog implements ActionListener{
@@ -18,6 +23,8 @@ public class KeyFrameEditDialog extends JDialog implements ActionListener{
 	
 	private JSlider audioSlider;
 	private JSlider videoSlider;
+	private WaveformPanel waveform;
+	private ImagePanel imagePanel;
 	
 	public KeyFrameEditDialog (ImageSoundData data) {
 		
@@ -25,11 +32,53 @@ public class KeyFrameEditDialog extends JDialog implements ActionListener{
 		
 		getContentPane().setLayout(new BorderLayout());
 		JPanel sliderPanel = new JPanel();
+		sliderPanel.setLayout(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridx=0;
+		gbc.gridy=0;
+		gbc.weightx=0.5;
+		gbc.weighty=0.01;
+		gbc.fill=GridBagConstraints.BOTH;
+		
+		sliderPanel.add(new JLabel("Audio Frame"),gbc);
+		
+		gbc.gridy++;
+		
+		// TODO: Start from the current audio head
 		audioSlider = new JSlider(1,data.audioFile().rawSampleData().length,1);
+		sliderPanel.add(audioSlider,gbc);
+
+		
+		gbc.gridy++;
+		gbc.weighty=0.33;
+		
+		waveform = new WaveformPanel(Color.RED, data);
+		waveform.setSamples(data.audioFile().smoothedSampleData());
+		sliderPanel.add(waveform,gbc);
+		
+		gbc.gridy++;
+		gbc.weighty=0.01;
+
+		sliderPanel.add(new JLabel("Video Frame"),gbc);
+
+		gbc.gridy++;
+
+		// TODO: Start from the current selected video frame
 		videoSlider = new JSlider(1,data.imageSet().files().length,1);
 		
-		sliderPanel.add(audioSlider);
-		sliderPanel.add(videoSlider);
+		sliderPanel.add(videoSlider,gbc);
+		
+		gbc.gridy++;
+		gbc.weighty=0.99;
+
+		
+		imagePanel = new ImagePanel(data);
+		// We don't want this to respond to global events
+		data.removeListener(imagePanel);
+		
+		sliderPanel.add(imagePanel,gbc);
+		
+		imagePanel.videoFrameSelected(data, 0);
 		
 		getContentPane().add(sliderPanel,BorderLayout.CENTER);
 		
@@ -47,7 +96,7 @@ public class KeyFrameEditDialog extends JDialog implements ActionListener{
 		
 		getContentPane().add(buttonPanel,BorderLayout.SOUTH);
 		
-		setSize(400,200);
+		setSize(250,700);
 		setLocationRelativeTo(null);
 		setModal(true);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
