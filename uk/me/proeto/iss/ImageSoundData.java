@@ -14,6 +14,8 @@ public class ImageSoundData {
 	private AudioFile audioFile = null;	
 	private Vector<ImageSoundListener> listeners = new Vector<ImageSoundListener>();
 	private Synchronisation synchronisation = new Synchronisation(this);
+	private int currentAudioFrame = -1;
+	private int currentVideoFrame = -1;
 
 
 	public void setAudioFile (AudioFile audioFile) {
@@ -43,6 +45,7 @@ public class ImageSoundData {
 
 	
 	public void setSelectedVideoFrame (int index) {
+		currentVideoFrame = index;
 		Enumeration<ImageSoundListener> en = listeners.elements();
 		while (en.hasMoreElements()) {
 			en.nextElement().videoFrameSelected(this, index);
@@ -50,11 +53,21 @@ public class ImageSoundData {
 	}
 
 	public void setSelectedAudioFrame (int index) {
+		currentAudioFrame = index;
 		Enumeration<ImageSoundListener> en = listeners.elements();
 		while (en.hasMoreElements()) {
 			en.nextElement().audioFrameSelected(this, index);
 		}
 	}
+	
+	public int currentAudioFrame () {
+		return currentAudioFrame;
+	}
+	
+	public int currentVideoFrame () {
+		return currentVideoFrame;
+	}
+	
 
 	public void setSmoothing (int smoothing) {
 		if (audioFile != null) {

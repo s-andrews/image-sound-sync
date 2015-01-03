@@ -47,8 +47,7 @@ public class KeyFrameEditDialog extends JDialog implements ActionListener, Chang
 		
 		gbc.gridy++;
 		
-		// TODO: Start from the current audio head
-		audioSlider = new JSlider(1,data.audioFile().rawSampleData().length,1);
+		audioSlider = new JSlider(1,data.audioFile().rawSampleData().length,Math.max(1,data.currentAudioFrame()));
 		audioSlider.addChangeListener(this);
 		sliderPanel.add(audioSlider,gbc);
 
@@ -58,6 +57,7 @@ public class KeyFrameEditDialog extends JDialog implements ActionListener, Chang
 		
 		waveform = new WaveformPanel(Color.RED, data);
 		waveform.setSamples(data.audioFile().rawSampleData());
+		waveform.setSelectedFrame(audioSlider.getValue());
 		sliderPanel.add(waveform,gbc);
 		
 		gbc.gridy++;
@@ -67,8 +67,7 @@ public class KeyFrameEditDialog extends JDialog implements ActionListener, Chang
 
 		gbc.gridy++;
 
-		// TODO: Start from the current selected video frame
-		videoSlider = new JSlider(1,data.imageSet().files().length,1);
+		videoSlider = new JSlider(1,data.imageSet().files().length,Math.max(data.currentVideoFrame(),1));
 		videoSlider.addChangeListener(this);
 		
 		sliderPanel.add(videoSlider,gbc);
@@ -83,7 +82,7 @@ public class KeyFrameEditDialog extends JDialog implements ActionListener, Chang
 		
 		sliderPanel.add(imagePanel,gbc);
 		
-		imagePanel.videoFrameSelected(data, 0);
+		imagePanel.videoFrameSelected(data, videoSlider.getValue());
 		
 		getContentPane().add(sliderPanel,BorderLayout.CENTER);
 		
