@@ -13,7 +13,6 @@ import javax.swing.event.ChangeListener;
 
 import uk.me.proeto.iss.ImageSoundData;
 import uk.me.proeto.iss.ImageSoundListener;
-import uk.me.proeto.iss.sound.AudioFile;
 
 public class AudioPanel extends JPanel implements ImageSoundListener {
 
@@ -52,7 +51,7 @@ public class AudioPanel extends JPanel implements ImageSoundListener {
 		smoothingSliderPanel.setLayout(new BorderLayout());
 		smoothingSliderPanel.add(new JLabel("Smoothing",JLabel.CENTER),BorderLayout.NORTH);
 		
-		smoothingSlider = new JSlider(JSlider.VERTICAL,0, 50, AudioFile.SAMPLES_PER_SECOND);
+		smoothingSlider = new JSlider(JSlider.VERTICAL,1, 200, 1);
 		smoothingSlider.addChangeListener(new ChangeListener() {
 			
 			public void stateChanged(ChangeEvent ce) {

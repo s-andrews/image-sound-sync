@@ -19,7 +19,7 @@ public class WaveformPanel extends JPanel implements MouseListener {
 	private int selectedAudioFrame = 0;
 	private ImageSoundData data;
 	
-	private static final Color DARK_RED = new Color(180,0,0);
+	private static final Color DARK_RED = new Color(240,190,190);
 	
 	public WaveformPanel (Color colour, ImageSoundData data) {
 		this.data = data;
