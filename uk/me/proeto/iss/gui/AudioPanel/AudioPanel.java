@@ -102,8 +102,8 @@ public class AudioPanel extends JPanel implements ImageSoundListener {
 	public void transitionsUpdated(ImageSoundData data) {
 		// Redraw the waveforms to highlight and transitions which
 		// have been calculated.
-		rawWaveform.setTransitions(data.synchronisation().videoTransitions());
-		normalisedWaveform.setTransitions(data.synchronisation().videoTransitions());		
+		rawWaveform.setTransitions(data.synchronisation().videoTransitions(),data.synchronisation().keyFrameAudioFrames());
+		normalisedWaveform.setTransitions(data.synchronisation().videoTransitions(),data.synchronisation().keyFrameAudioFrames());		
 	}
 
 	public void audioFrameSelected(ImageSoundData data, int frame) {

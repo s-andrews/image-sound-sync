@@ -14,12 +14,14 @@ public class WaveformPanel extends JPanel implements MouseListener {
 
 	private double [] samples = new double [0];
 	private int [] transitions = null;
+	private int [] keyFrames = null;
 	private double max = 1;
 	private Color colour;
 	private int selectedAudioFrame = 0;
 	private ImageSoundData data;
 	
-	private static final Color DARK_RED = new Color(240,190,190);
+	private static final Color LIGHT_RED = new Color(240,190,190);
+	private static final Color DARK_RED = new Color(150,0,0);
 	
 	public WaveformPanel (Color colour, ImageSoundData data) {
 		this.data = data;
@@ -36,8 +38,9 @@ public class WaveformPanel extends JPanel implements MouseListener {
 		repaint();
 	}
 	
-	public void setTransitions (int [] transitions) {
+	public void setTransitions (int [] transitions, int [] keyFrames) {
 		this.transitions = transitions;
+		this.keyFrames = keyFrames;
 		repaint();
 	}
 	
@@ -93,11 +96,20 @@ public class WaveformPanel extends JPanel implements MouseListener {
 
 		// See if we can highlight any transitions
 		if (transitions != null) {
-			g.setColor(DARK_RED);
+			g.setColor(LIGHT_RED);
 			for (int i=0;i<transitions.length;i++) {
 				g.drawLine(getX(transitions[i]), 0, getX(transitions[i]), getHeight());
 			}
 		}
+		
+		// See if we can highlight any key frames
+		if (keyFrames != null) {
+			g.setColor(DARK_RED);
+			for (int i=0;i<keyFrames.length;i++) {
+				g.fillRect(getX(keyFrames[i])-1, 0, 3, getHeight());
+			}
+		}
+		
 		
 		g.setColor(colour);
 		

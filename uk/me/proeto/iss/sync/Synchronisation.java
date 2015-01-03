@@ -221,6 +221,16 @@ public class Synchronisation implements ImageSoundListener {
 	public int [] videoTransitions () {
 		return soundIndices;
 	}
+	
+	public int [] keyFrameAudioFrames () {
+		int [] keys = new int[keyFrames.size()];
+		
+		for (int i=0;i<keys.length;i++) {
+			keys[i] = keyFrames.elementAt(i).audioFrame();
+		}
+		
+		return keys;
+	}
 
 
 	public void newAudioFile(ImageSoundData data) {

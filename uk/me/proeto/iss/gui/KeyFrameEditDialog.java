@@ -101,7 +101,7 @@ public class KeyFrameEditDialog extends JDialog implements ActionListener, Chang
 		
 		getContentPane().add(buttonPanel,BorderLayout.SOUTH);
 		
-		setSize(500,700);
+		setSize(700,700);
 		setLocationRelativeTo(null);
 		setModal(true);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
