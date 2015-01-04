@@ -57,6 +57,7 @@ public class KeyFrameEditDialog extends JDialog implements ActionListener, Chang
 		gbc.weighty=0.33;
 		
 		waveform = new WaveformPanel(Color.RED, data);
+		waveform.setTransitions(new int [0], data.synchronisation().keyFrameAudioFrames());
 		waveform.setSamples(data.audioFile().rawSampleData());
 		waveform.setSelectedFrame(audioSlider.getValue());
 		sliderPanel.add(waveform,gbc);
