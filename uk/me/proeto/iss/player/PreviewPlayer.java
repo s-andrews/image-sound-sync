@@ -31,9 +31,12 @@ public class PreviewPlayer implements Runnable, LineListener {
 	private boolean forceStop = false;
 	private boolean pauseFlag = false;
 	
-	public PreviewPlayer (ImageSoundData data) {
+	private int startFrame;
+	
+	public PreviewPlayer (ImageSoundData data, int startFrame) {
 		
 		this.data = data;
+		this.startFrame = startFrame;
 		
 		Thread t = new Thread(this);
 		t.start();
@@ -47,12 +50,17 @@ public class PreviewPlayer implements Runnable, LineListener {
 		pauseFlag = true;
 	}
 	
-	@Override
 	public void run() {
 		try {			
 			SimpleWavPlayer audioPlayer = new SimpleWavPlayer(data.audioFile().file());
 			audioPlayer.addLineListener(this);
-			audioPlayer.play();
+			
+			// We set the play start to the number of bytes into the file we want to start
+			// playing.  We therefore need to correct for the number of frames in our buffer
+			// window (ie true audio frames per samples frame in the waveform view), and the
+			// number of bytes in a frame (4).
+			
+			audioPlayer.play(data.audioFile().bufferSize()*startFrame*4);
 			
 			while (! playerStopped) {
 				int audioFrame = data.audioFile().getFrameForRawAudioPosition(audioPlayer.getAudioFrame());

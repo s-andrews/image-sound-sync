@@ -132,8 +132,8 @@ public class ImageSoundSyncApplication extends JFrame {
 	
 	
 	public void play () {
-		// TODO: Check we have everything we need to actually play.
-		previewPlayer = new PreviewPlayer(data);
+		if (data.audioFile().file() == null) return;
+		previewPlayer = new PreviewPlayer(data,data.currentAudioFrame());
 	}
 	
 	public void stop () {

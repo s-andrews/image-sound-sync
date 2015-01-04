@@ -88,6 +88,10 @@ public class AudioFile {
 		return smoothingWindow;
 	}
 	
+	public int bufferSize () {
+		return bufferSize;
+	}
+	
 	public void setSmoothing (int smoothingWindow) {
 		if (smoothingWindow == this.smoothingWindow) {			
 			return;

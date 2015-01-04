@@ -30,6 +30,16 @@ public class SimpleWavPlayer {
 	private boolean stop = false;
 	private boolean pause = false;
 	
+	// These variables are used to tell where we should start when we want to play
+	// from part way through the file.
+	
+	// This is the number of bytes into the file where we need to start playing.
+	private int startSample;
+	
+	// This is the number of frames we skipped over so we can correctly get the
+	// play frome from the sourceDataLine when asked.
+	private int sampleWhenPlayStarted = -1;
+	
 	public SimpleWavPlayer (File file) throws IOException {
 		inputStream = new FileInputStream(file);
 	}
@@ -42,14 +52,18 @@ public class SimpleWavPlayer {
 	
 	public int getAudioFrame () {
 		if (sourceDataLine == null) return 0;
-		return sourceDataLine.getFramePosition();
+		return sourceDataLine.getFramePosition()+sampleWhenPlayStarted;
 	}
 	
 
-	public void play() {
+	public void play(int startSample) {
+		this.startSample = startSample;
 		new Thread() {
 			@Override
 			public void run() {
+				
+				int samplesRead = 0;
+				
 				AudioInputStream audioInputStream = null;
 				try {
 					audioInputStream = AudioSystem.getAudioInputStream(inputStream);
@@ -77,7 +91,8 @@ public class SimpleWavPlayer {
 				}
 
 				sourceDataLine.start();
-				byte[] data = new byte[524288];// 128Kb
+//				byte[] data = new byte[524288];// 128Kb
+				byte[] data = new byte[131072];// 128Kb
 				try {
 					int bytesRead = 0;
 					while (bytesRead != -1) {
@@ -93,8 +108,20 @@ public class SimpleWavPlayer {
 							continue;
 						}
 						bytesRead = audioInputStream.read(data, 0, data.length);
-						if (bytesRead >= 0)
-							sourceDataLine.write(data, 0, bytesRead);
+						if (bytesRead >= 0) {
+							// This allows us to start playing part through the sample.  It's
+							// pretty inefficient in that we end up reading the part of the file
+							// we're skipping rather than just jumping to the right offset, but
+							// hopefully it's pretty safe.
+							samplesRead += bytesRead;
+
+							if (samplesRead >= SimpleWavPlayer.this.startSample) {
+								if (sampleWhenPlayStarted < 0) {
+									sampleWhenPlayStarted = (samplesRead-bytesRead)/4;
+								}
+								sourceDataLine.write(data, 0, bytesRead);
+							}
+						}
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
