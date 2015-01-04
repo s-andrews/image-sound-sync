@@ -1,6 +1,7 @@
 package uk.me.proeto.iss.sync;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Vector;
 
@@ -45,7 +46,11 @@ public class Synchronisation implements ImageSoundListener {
 	}
 
 	public void addKeyFrame (KeyFrame keyFrame) {
+		if (! isValidKeyFrame(keyFrame)) {
+			throw new IllegalStateException("Key frame added isn't compatible with the existing key frames");
+		}
 		keyFrames.add(keyFrame);
+		Collections.sort(keyFrames);
 		generateSynchronisation();
 	}
 
@@ -230,6 +235,54 @@ public class Synchronisation implements ImageSoundListener {
 		}
 		
 		return keys;
+	}
+	
+	public boolean isValidKeyFrame (KeyFrame kf) {
+		
+		// For this to be valid we need to find the existing frame which
+		// has the audio frame just after this one, and then see if the
+		// video frame falls between that and the one before.
+		
+		// Check a simple case first
+		if (keyFrames.size() == 0) return true;
+		
+		// You can't assign to the initial frames
+		if (kf.audioFrame() == 0 || kf.videoFrame() == 0) return false;
+		
+		for (int i=0;i<keyFrames.size();i++) {
+			
+			// We can't duplicate a key frame position
+			if (keyFrames.elementAt(i).audioFrame() == kf.audioFrame()) return false;
+			
+			if (keyFrames.elementAt(i).audioFrame() > kf.audioFrame()) {
+				// We need to compare this with the frame before
+				int endVideoFrame = keyFrames.elementAt(i).videoFrame();
+				int startVideoFrame = 0;
+				if (i>0) {
+					startVideoFrame = keyFrames.elementAt(i-1).videoFrame();
+				}
+				
+				if (kf.videoFrame() > startVideoFrame && kf.videoFrame() < endVideoFrame) {
+					return true;
+				}
+				
+				return false;
+				
+			}
+		}
+		
+		// If we get here then none of the existing frames are after
+		// the one being added so we need to compare to the end.
+		
+		int endVideoFrame = imageIndices.length-1;
+		int startVideoFrame = keyFrames.elementAt(keyFrames.size()-1).videoFrame();
+		
+		if (kf.videoFrame() > startVideoFrame && kf.videoFrame() < endVideoFrame) {
+			return true;
+		}
+		
+		return false;
+		
 	}
 
 

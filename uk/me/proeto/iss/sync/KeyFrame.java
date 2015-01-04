@@ -1,6 +1,6 @@
 package uk.me.proeto.iss.sync;
 
-public class KeyFrame {
+public class KeyFrame implements Comparable<KeyFrame> {
 
 	private int audioFrame;
 	private int videoFrame;
@@ -16,5 +16,9 @@ public class KeyFrame {
 	
 	public int videoFrame () {
 		return videoFrame;
+	}
+
+	public int compareTo(KeyFrame o) {
+		return audioFrame - o.audioFrame;
 	}
 }
