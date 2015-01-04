@@ -28,6 +28,7 @@ public class KeyFrameEditDialog extends JDialog implements ActionListener, Chang
 	private WaveformPanel waveform;
 	private ImagePanel imagePanel;
 	private ImageSoundData data;
+	private JButton addButton;
 	
 	public KeyFrameEditDialog (ImageSoundData data) {
 		this.data = data;
@@ -88,9 +89,10 @@ public class KeyFrameEditDialog extends JDialog implements ActionListener, Chang
 		
 		JPanel buttonPanel = new JPanel();
 		
-		JButton addButton = new JButton("Add Key Frame");
+		addButton = new JButton("Add Key Frame");
 		addButton.setActionCommand("add");
 		addButton.addActionListener(this);
+		addButton.setEnabled(false);
 		buttonPanel.add(addButton);
 		
 		JButton cancelButton = new JButton("Cancel");
@@ -99,6 +101,7 @@ public class KeyFrameEditDialog extends JDialog implements ActionListener, Chang
 		buttonPanel.add(cancelButton);
 		
 		getContentPane().add(buttonPanel,BorderLayout.SOUTH);
+		stateChanged(null);
 		
 		setSize(700,700);
 		setLocationRelativeTo(null);
@@ -123,7 +126,13 @@ public class KeyFrameEditDialog extends JDialog implements ActionListener, Chang
 	}
 
 	public void stateChanged(ChangeEvent ce) {
-
+		
+		// Check whether we can enable the add key frame button.
+		KeyFrame testFrame = new KeyFrame(audioSlider.getValue(), videoSlider.getValue());
+		addButton.setEnabled(data.synchronisation().isValidKeyFrame(testFrame));
+		
+		if (ce == null) return; // This was the initial trigger to set up the correct state
+		
 		if (ce.getSource().equals(audioSlider)) {
 			waveform.setSelectedFrame(audioSlider.getValue());
 		}
