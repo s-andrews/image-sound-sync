@@ -134,7 +134,6 @@ public class KeyFrameEditDialog extends JDialog implements ActionListener, Chang
 
 	public void actionPerformed(ActionEvent ae) {
 		if (ae.getActionCommand().equals("add")) {
-			// TODO: Add some logic to see if this is a valid frame to select.
 			keyFrame = new KeyFrame(audioSlider.getValue(), videoSlider.getValue());
 		}
 		

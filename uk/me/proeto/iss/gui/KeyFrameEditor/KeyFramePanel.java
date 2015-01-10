@@ -41,8 +41,16 @@ public class KeyFramePanel extends JPanel implements MouseListener {
 	private int selectedVideoFrame = 0;
 	private ImageSoundData data;
 	
+	
+	private int validAudioStart = 0;
+	private int validAudioEnd = 0;
+	private int validVideoStart = 0;
+	private int validVideoEnd = 0;
+	
+	
 	private static final Color LIGHT_RED = new Color(240,190,190);
 	private static final Color DARK_RED = new Color(150,0,0);
+	private static final Color LIGHT_GREEN = new Color(190,240,190);
 	
 	public KeyFramePanel (ImageSoundData data) {
 		this.data = data;
@@ -55,11 +63,13 @@ public class KeyFramePanel extends JPanel implements MouseListener {
 	
 	public void setSelectedAudioFrame (int frame) {
 		this.selectedAudioFrame = frame;
+		setValidRegionFromAudio();
 		repaint();
 	}
 	
 	public void setSelectedVideoFrame (int frame) {
 		selectedVideoFrame = frame;
+		setValidRegionFromVideo();
 		repaint();
 	}
 	
@@ -99,6 +109,103 @@ public class KeyFramePanel extends JPanel implements MouseListener {
 		return (int)(height+(height*proportion));	
 	}
 	
+	private void setValidRegionFromAudio () {
+
+		// Check a simple case first
+		if (keyFrames.length == 0) {
+			validAudioStart = 1;
+			validAudioEnd = samples.length-1;
+			validVideoStart = 1;
+			validVideoEnd = numberOfVideoFrames-1;
+			return;
+		}
+		
+		
+		for (int i=0;i<keyFrames.length;i++) {
+			
+			// We can't duplicate a key frame position
+			if (keyFrames[i].audioFrame() == selectedAudioFrame) {
+				validAudioStart = -1;
+				validAudioEnd = -1;
+				validVideoStart = -1;
+				validVideoEnd = -1;
+				return;
+			}
+			
+			if (keyFrames[i].audioFrame() > selectedAudioFrame) {
+				// We need to compare this with the frame before
+				validVideoEnd = keyFrames[i].videoFrame()-1;
+				validAudioEnd = keyFrames[i].audioFrame()-1;
+				if (i>0) {
+					validVideoStart = keyFrames[i-1].videoFrame()+1;
+					validAudioStart = keyFrames[i-1].audioFrame()+1;
+				}
+				else {
+					validVideoStart = 1;
+					validAudioStart = 1;
+				}
+				return;
+			}
+		}
+		
+		// If we get here then none of the existing frames are after
+		// the one being added so we need to compare to the end.
+		
+		validVideoEnd = numberOfVideoFrames-1;
+		validAudioEnd = samples.length-1;
+		validVideoStart = keyFrames[keyFrames.length-1].videoFrame()+1;
+		validAudioStart = keyFrames[keyFrames.length-1].audioFrame()+1;		
+	}
+	
+	private void setValidRegionFromVideo () {
+
+		// Check a simple case first
+		if (keyFrames.length == 0) {
+			validAudioStart = 1;
+			validAudioEnd = samples.length-1;
+			validVideoStart = 1;
+			validVideoEnd = numberOfVideoFrames-1;
+			return;
+		}
+		
+		
+		for (int i=0;i<keyFrames.length;i++) {
+			
+			// We can't duplicate a key frame position
+			if (keyFrames[i].videoFrame() == selectedVideoFrame) {
+				validAudioStart = -1;
+				validAudioEnd = -1;
+				validVideoStart = -1;
+				validVideoEnd = -1;
+				return;
+			}
+			
+			if (keyFrames[i].videoFrame() > selectedVideoFrame) {
+				// We need to compare this with the frame before
+				validVideoEnd = keyFrames[i].videoFrame()-1;
+				validAudioEnd = keyFrames[i].audioFrame()-1;
+				if (i>0) {
+					validVideoStart = keyFrames[i-1].videoFrame()+1;
+					validAudioStart = keyFrames[i-1].audioFrame()+1;
+				}
+				else {
+					validVideoStart = 1;
+					validAudioStart = 1;
+				}
+				return;
+			}
+		}
+		
+		// If we get here then none of the existing frames are after
+		// the one being added so we need to compare to the end.
+		
+		validVideoEnd = numberOfVideoFrames-1;
+		validAudioEnd = samples.length-1;
+		validVideoStart = keyFrames[keyFrames.length-1].videoFrame()+1;
+		validAudioStart = keyFrames[keyFrames.length-1].audioFrame()+1;		
+		
+	}
+	
 	public Dimension getPreferredSize () {
 		return new Dimension(1000,150);
 	}
@@ -115,14 +222,18 @@ public class KeyFramePanel extends JPanel implements MouseListener {
 			return;
 		}
 
-		// Draw the current selection
-		g.setColor(Color.BLACK);
-		for (int offset = -1;offset<=1;offset++) {
-			int audioX = getAudioX(selectedAudioFrame)+offset;
-			int videoX = getVideoX(selectedVideoFrame)+offset;
-			g.drawLine(audioX, 0, audioX, (getHeight()*2)/5);
-			g.drawLine(audioX, (getHeight()*2)/5,videoX , (getHeight()*3)/5);
-			g.drawLine(videoX, (getHeight()*3)/5,videoX , getHeight());
+		// Highlight the valid region
+		g.setColor(LIGHT_GREEN);
+		if (validAudioStart >=0) {
+			int audioStartX = getAudioX(validAudioStart);
+			int audioEndX = getAudioX(validAudioEnd);
+			int videoStartX = getVideoX(validVideoStart);
+			int videoEndX = getVideoX(validVideoEnd);
+			
+			int audioBottomY = (getHeight()*2)/5;
+			int videoTopY = (getHeight()*3)/5;
+			
+			g.fillPolygon(new int[] {audioStartX,audioEndX, audioEndX,videoEndX,videoEndX,videoStartX,videoStartX,audioStartX}, new int [] {0,0,audioBottomY,videoTopY,getHeight(),getHeight(),videoTopY,audioBottomY}, 8);
 		}
 
 		// See if we can highlight any transitions
@@ -150,7 +261,7 @@ public class KeyFramePanel extends JPanel implements MouseListener {
 				}
 			}
 		}
-		
+
 		
 		g.setColor(colour);
 		
@@ -172,10 +283,18 @@ public class KeyFramePanel extends JPanel implements MouseListener {
 			g.fillRect(lastX, yTop, x-lastX, yHeight);
 			lastX = x;
 			
+		}	
+
+		// Draw the current selection
+		g.setColor(Color.BLACK);
+		for (int offset = -1;offset<=1;offset++) {
+			int audioX = getAudioX(selectedAudioFrame)+offset;
+			int videoX = getVideoX(selectedVideoFrame)+offset;
+			g.drawLine(audioX, 0, audioX, (getHeight()*2)/5);
+			g.drawLine(audioX, (getHeight()*2)/5,videoX , (getHeight()*3)/5);
+			g.drawLine(videoX, (getHeight()*3)/5,videoX , getHeight());
 		}
-		
-		
-		
+
 		
 	}
 

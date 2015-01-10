@@ -152,6 +152,7 @@ public class Synchronisation implements ImageSoundListener {
 			// First we need to work out the optimal number of audio frames between
 			// images if everything was evenly spread.
 
+			// TODO: Account for the case where there's only one frame assignment possible.
 			int optimalAudioGap = (endAudioFrame-startAudioFrame)/(endVideoFrame-startVideoFrame);
 
 			// We now take a percentage of this to be the minimum gap
