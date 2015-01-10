@@ -36,6 +36,9 @@ public class ImagePanel extends JPanel implements ImageSoundListener {
 	
 	
 	public void paint (Graphics g) {
+		
+		super.paint(g);
+		
 		if (currentImage != null) {
 			int width,height,x,y;
 			float originalRatio = (float)currentImage.getWidth(null) / currentImage.getHeight(null);
