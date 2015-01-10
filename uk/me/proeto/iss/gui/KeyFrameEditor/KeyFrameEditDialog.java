@@ -16,10 +16,9 @@
  * along with Image Sound Sync.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package uk.me.proeto.iss.gui;
+package uk.me.proeto.iss.gui.KeyFrameEditor;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -34,7 +33,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import uk.me.proeto.iss.ImageSoundData;
-import uk.me.proeto.iss.gui.AudioPanel.WaveformPanel;
+import uk.me.proeto.iss.gui.ImagePanel;
 import uk.me.proeto.iss.sync.KeyFrame;
 
 public class KeyFrameEditDialog extends JDialog implements ActionListener, ChangeListener {
@@ -43,7 +42,7 @@ public class KeyFrameEditDialog extends JDialog implements ActionListener, Chang
 	
 	private JSlider audioSlider;
 	private JSlider videoSlider;
-	private WaveformPanel waveform;
+	private KeyFramePanel waveform;
 	private ImagePanel imagePanel;
 	private ImageSoundData data;
 	private JButton addButton;
@@ -74,10 +73,8 @@ public class KeyFrameEditDialog extends JDialog implements ActionListener, Chang
 		gbc.gridy++;
 		gbc.weighty=0.33;
 		
-		waveform = new WaveformPanel(Color.RED, data);
-		waveform.setTransitions(new int [0], data.synchronisation().keyFrameAudioFrames());
-		waveform.setSamples(data.audioFile().rawSampleData());
-		waveform.setSelectedFrame(audioSlider.getValue());
+		waveform = new KeyFramePanel(data);
+		waveform.setSelectedAudioFrame(audioSlider.getValue());
 		sliderPanel.add(waveform,gbc);
 		
 		gbc.gridy++;
@@ -88,6 +85,7 @@ public class KeyFrameEditDialog extends JDialog implements ActionListener, Chang
 		gbc.gridy++;
 
 		videoSlider = new JSlider(1,data.imageSet().files().length,Math.max(data.currentVideoFrame(),1));
+		waveform.setSelectedVideoFrame(videoSlider.getValue());
 		videoSlider.addChangeListener(this);
 		
 		sliderPanel.add(videoSlider,gbc);
@@ -153,10 +151,11 @@ public class KeyFrameEditDialog extends JDialog implements ActionListener, Chang
 		if (ce == null) return; // This was the initial trigger to set up the correct state
 		
 		if (ce.getSource().equals(audioSlider)) {
-			waveform.setSelectedFrame(audioSlider.getValue());
+			waveform.setSelectedAudioFrame(audioSlider.getValue());
 		}
 		else if (ce.getSource().equals(videoSlider)) {
 			imagePanel.videoFrameSelected(data, videoSlider.getValue());
+			waveform.setSelectedVideoFrame(videoSlider.getValue());
 		}
 	}
 	

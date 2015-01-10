@@ -34,7 +34,7 @@ import javax.swing.event.ListSelectionListener;
 
 import uk.me.proeto.iss.ImageSoundData;
 import uk.me.proeto.iss.ImageSoundListener;
-import uk.me.proeto.iss.gui.KeyFrameEditDialog;
+import uk.me.proeto.iss.gui.KeyFrameEditor.KeyFrameEditDialog;
 import uk.me.proeto.iss.sync.KeyFrame;
 
 public class ImageList extends JPanel implements ImageSoundListener, ListSelectionListener, ActionListener {
