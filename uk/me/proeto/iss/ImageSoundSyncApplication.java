@@ -132,7 +132,7 @@ public class ImageSoundSyncApplication extends JFrame {
 	
 	
 	public void play () {
-		if (data.audioFile().file() == null) return;
+		if (data.audioFile() == null) return;
 		previewPlayer = new PreviewPlayer(data,data.currentAudioFrame());
 	}
 	

@@ -64,6 +64,7 @@ public class ImageSoundData {
 	
 	public void setSelectedVideoFrame (int index) {
 		currentVideoFrame = index;
+		currentAudioFrame = synchronisation.getSoundFrameForImageIndex(index);
 		Enumeration<ImageSoundListener> en = listeners.elements();
 		while (en.hasMoreElements()) {
 			en.nextElement().videoFrameSelected(this, index);
