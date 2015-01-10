@@ -149,8 +149,13 @@ public class Synchronisation implements ImageSoundListener {
 			// First we need to work out the optimal number of audio frames between
 			// images if everything was evenly spread.
 
-			// TODO: Account for the case where there's only one frame assignment possible.
-			int optimalAudioGap = (endAudioFrame-startAudioFrame)/(endVideoFrame-startVideoFrame);
+			// We might not have any frames to automatically assign if two key frames
+			// are adjacent, so we set a default gap.
+			int optimalAudioGap = 0;
+			
+			if (endVideoFrame-startVideoFrame > 0) {
+				optimalAudioGap = (endAudioFrame-startAudioFrame)/(endVideoFrame-startVideoFrame);
+			}
 
 			// We now take a percentage of this to be the minimum gap
 
@@ -197,7 +202,7 @@ public class Synchronisation implements ImageSoundListener {
 					if (usedSlots[indicesToSort[j]-startAudioFrame]) {
 						// This slots isn't available as it's too close to one
 						// which has already been used.
-						System.out.println("Skipping "+indicesToSort[j]+" as it's too close to a used slot");
+//						System.out.println("Skipping "+indicesToSort[j]+" as it's too close to a used slot");
 						currentSortedIndex++;
 						continue;
 					}
