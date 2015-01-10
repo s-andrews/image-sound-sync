@@ -6,6 +6,7 @@ package uk.me.proeto.iss.player;
  * http://albertattard.blogspot.co.uk/2009/12/simple-java-wav-player.html
  */
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -41,7 +42,9 @@ public class SimpleWavPlayer {
 	private int sampleWhenPlayStarted = -1;
 	
 	public SimpleWavPlayer (File file) throws IOException {
-		inputStream = new FileInputStream(file);
+		// Some systems don't like playing directly from a file input stream
+		// without an intervening buffer.
+		inputStream = new BufferedInputStream(new FileInputStream(file));
 	}
 	
 	public void addLineListener (LineListener l) {
