@@ -110,9 +110,6 @@ public class Synchronisation implements ImageSoundListener {
 		// Now we need to get the normalised sound data
 		double [] audioData = data.audioFile().smoothedSampleData();
 
-		// TODO: Eventually split this up into a loop over key frames.
-
-		
 		
 		for (int kf=0;kf<=keyFrames.size();kf++) {
 
@@ -144,7 +141,7 @@ public class Synchronisation implements ImageSoundListener {
 				endVideoFrame = keyFrames.elementAt(kf).videoFrame()-1;
 			}
 			
-			System.out.println("From key index "+kf+" audio was "+startAudioFrame+"-"+endAudioFrame+" video was "+startVideoFrame+"-"+endVideoFrame+" total was "+imageIndices.length+","+soundIndices.length);
+//			System.out.println("From key index "+kf+" audio was "+startAudioFrame+"-"+endAudioFrame+" video was "+startVideoFrame+"-"+endVideoFrame+" total was "+imageIndices.length+","+soundIndices.length);
 			
 			// We need to work out the minimum number of frames we have to put
 			// between adjacent transitions.
@@ -159,7 +156,7 @@ public class Synchronisation implements ImageSoundListener {
 
 			int minGapThisSegment = (optimalAudioGap*minGap)/100;
 
-			System.out.println("Min gap per segment is "+minGapThisSegment+" from optimal gap "+optimalAudioGap);
+//			System.out.println("Min gap per segment is "+minGapThisSegment+" from optimal gap "+optimalAudioGap);
 
 			// We now need to make up a set of indices for the range we're looking at
 			// and will sort these by their smoothed values.
@@ -223,7 +220,7 @@ public class Synchronisation implements ImageSoundListener {
 			// Finally we can assign the frames to their sound slots.
 			for (int i=0;i<transitionFrames.length;i++) {
 				soundIndices[startVideoFrame+i] = transitionFrames[i];
-				System.out.println("Transition to frame "+(startVideoFrame+i)+" happens at "+transitionFrames[i]);
+//				System.out.println("Transition to frame "+(startVideoFrame+i)+" happens at "+transitionFrames[i]);
 			}
 
 			for (int i=1;i<soundIndices.length;i++) {
