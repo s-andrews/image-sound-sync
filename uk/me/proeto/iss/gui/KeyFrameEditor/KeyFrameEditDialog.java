@@ -65,7 +65,7 @@ public class KeyFrameEditDialog extends JDialog implements ActionListener, Chang
 		
 		gbc.gridy++;
 		
-		audioSlider = new JSlider(1,data.audioFile().rawSampleData().length,Math.max(1,data.currentAudioFrame()));
+		audioSlider = new JSlider(1,data.audioFile().rawSampleData().length-1,Math.max(1,data.currentAudioFrame()));
 		audioSlider.addChangeListener(this);
 		sliderPanel.add(audioSlider,gbc);
 
@@ -84,7 +84,7 @@ public class KeyFrameEditDialog extends JDialog implements ActionListener, Chang
 
 		gbc.gridy++;
 
-		videoSlider = new JSlider(1,data.imageSet().files().length,Math.max(data.currentVideoFrame(),1));
+		videoSlider = new JSlider(1,data.imageSet().files().length-1,Math.max(data.currentVideoFrame(),1));
 		waveform.setSelectedVideoFrame(videoSlider.getValue());
 		videoSlider.addChangeListener(this);
 		
