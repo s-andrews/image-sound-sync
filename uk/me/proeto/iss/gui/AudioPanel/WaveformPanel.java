@@ -25,6 +25,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import uk.me.proeto.iss.ImageSoundData;
 import uk.me.proeto.iss.ImageSoundListener;
@@ -44,6 +45,9 @@ public class WaveformPanel extends JPanel implements MouseListener, ImageSoundLi
 	private static final Color DARK_RED = new Color(150,0,0);
 	private static final Color DARK_BLUE = new Color(0,0,170);
 	private static final Color DARK_GREEN = new Color(0,170,0);
+	
+	private int currentStartFrame = 0;
+	private int currentEndFrame = 0;
 	
 	
 	public WaveformPanel (ImageSoundData data) {
@@ -75,17 +79,31 @@ public class WaveformPanel extends JPanel implements MouseListener, ImageSoundLi
 		repaint();
 	}
 	
-	public void setSelectedFrame (int frame) {
+	private void setSelectedFrame (int frame) {
 		this.selectedAudioFrame = frame;
+		
+		// Work out if we need to reposition the viewpoint.
+		int viewWidth = currentEndFrame - currentStartFrame;
+		
+		currentStartFrame = selectedAudioFrame - (viewWidth/2);
+		if (currentStartFrame < 0) currentStartFrame = 0;
+		
+		currentEndFrame = currentStartFrame + viewWidth;
+		
+		if (currentEndFrame > (rawSamples.length-1)) {
+			currentEndFrame = rawSamples.length-1;
+			currentStartFrame = currentEndFrame - viewWidth;
+		}
+		
 		repaint();
 	}
 	
 	private int getX (int bin) {
-		return (int)((getWidth()/(double)rawSamples.length)*bin);
+		return (int)((getWidth()/(double)(currentEndFrame-currentStartFrame)*(bin-currentStartFrame)));
 	}
 	
 	private int getXFrame (int position) {
-		return (int)((rawSamples.length/(double)getWidth())*position);
+		return currentStartFrame+(int)((((currentEndFrame-currentStartFrame))/(double)getWidth())*position);
 		
 	}
 	
@@ -121,6 +139,8 @@ public class WaveformPanel extends JPanel implements MouseListener, ImageSoundLi
 	public void paint (Graphics g) {
 		
 		super.paint(g);
+		
+		
 		
 		g.setColor(Color.WHITE);
 		g.fillRect(0, 0, getWidth(), getHeight());
@@ -206,6 +226,26 @@ public class WaveformPanel extends JPanel implements MouseListener, ImageSoundLi
 	}
 
 	public void mouseClicked(MouseEvent me) {
+		if (SwingUtilities.isRightMouseButton(me)) {
+			// We're not setting the play head, we're zooming out.
+			int viewWidth = currentEndFrame-currentStartFrame;
+			viewWidth *= 2;
+			if (viewWidth > rawSamples.length-1) {
+				viewWidth = rawSamples.length-1;
+			}
+			
+			currentStartFrame = selectedAudioFrame-(viewWidth/2);
+			if (currentStartFrame < 0) currentStartFrame = 0;
+			
+			currentEndFrame = currentStartFrame+viewWidth;
+			if (currentEndFrame >= rawSamples.length) {
+				currentEndFrame = rawSamples.length-1;
+				currentStartFrame = currentEndFrame-viewWidth;
+			}
+			repaint();
+			return;
+		}
+		
 		int audioBin = getXFrame(me.getX());
 		data.setSelectedAudioFrame(audioBin);
 	}
@@ -221,6 +261,8 @@ public class WaveformPanel extends JPanel implements MouseListener, ImageSoundLi
 	public void newAudioFile(ImageSoundData data) {
 		setRawSamples(data.audioFile().rawSampleData());
 		setSmoothedSamples(data.audioFile().smoothedSampleData());
+		currentStartFrame = 0;
+		currentEndFrame = rawSamples.length-1;
 		repaint();		
 	}
 
