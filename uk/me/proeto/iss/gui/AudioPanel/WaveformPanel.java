@@ -23,6 +23,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -30,7 +31,7 @@ import javax.swing.SwingUtilities;
 import uk.me.proeto.iss.ImageSoundData;
 import uk.me.proeto.iss.ImageSoundListener;
 
-public class WaveformPanel extends JPanel implements MouseListener, ImageSoundListener {
+public class WaveformPanel extends JPanel implements MouseListener, MouseMotionListener, ImageSoundListener {
 
 	private double [] rawSamples = new double [0];
 	private double [] smoothedSamples = new double [0];
@@ -45,15 +46,21 @@ public class WaveformPanel extends JPanel implements MouseListener, ImageSoundLi
 	private static final Color DARK_RED = new Color(150,0,0);
 	private static final Color DARK_BLUE = new Color(0,0,170);
 	private static final Color DARK_GREEN = new Color(0,170,0);
+	private static final Color YELLOW = Color.YELLOW;
 	
 	private int currentStartFrame = 0;
 	private int currentEndFrame = 0;
+	
+	private boolean makingSelection = false;
+	private int selectionStartFrame = 0;
+	private int selectionEndFrame = 0;
 	
 	
 	public WaveformPanel (ImageSoundData data) {
 		this.data = data;
 		data.addListener(this);
 		addMouseListener(this);
+		addMouseMotionListener(this);
 	}
 	
 	private void setRawSamples (double [] samples) {
@@ -140,8 +147,6 @@ public class WaveformPanel extends JPanel implements MouseListener, ImageSoundLi
 		
 		super.paint(g);
 		
-		
-		
 		g.setColor(Color.WHITE);
 		g.fillRect(0, 0, getWidth(), getHeight());
 		
@@ -152,6 +157,17 @@ public class WaveformPanel extends JPanel implements MouseListener, ImageSoundLi
 			return;
 		}
 
+		// Shade any selection we're making
+		if (makingSelection) {
+			g.setColor(YELLOW);
+			
+			int maxSel = Math.max(selectionStartFrame,selectionEndFrame);
+			int minSel = Math.min(selectionStartFrame,selectionEndFrame);
+			
+			g.fillRect(getX(minSel), 0, getX(maxSel)-getX(minSel), getHeight());
+		}
+		
+		
 		// Shade behind the play head
 		g.setColor(Color.LIGHT_GRAY);
 		g.fillRect(getX(selectedAudioFrame)-10, 0, 20, getHeight());
@@ -254,9 +270,39 @@ public class WaveformPanel extends JPanel implements MouseListener, ImageSoundLi
 
 	public void mouseExited(MouseEvent e) {}
 
-	public void mousePressed(MouseEvent e) {}
+	public void mousePressed(MouseEvent me) {
+		makingSelection = true;
+		selectionStartFrame = getXFrame(me.getX());
+		selectionEndFrame = getXFrame(me.getX());
+	}
+	
+	public void mouseDragged (MouseEvent me) {
+		if (makingSelection) {
+			selectionEndFrame = getXFrame(me.getX())+1;
+			if (selectionEndFrame >= rawSamples.length) selectionEndFrame = rawSamples.length-1;
+		}
+		repaint();
+		
+	}
 
-	public void mouseReleased(MouseEvent e) {}
+	public void mouseMoved(MouseEvent e) {}
+
+	public void mouseReleased(MouseEvent e) {
+		if (makingSelection && Math.abs(selectionEndFrame-selectionStartFrame) > 5) {
+			currentStartFrame = Math.min(selectionStartFrame,selectionEndFrame);
+			currentEndFrame = Math.max(selectionStartFrame, selectionEndFrame);
+			
+		}
+		makingSelection = false;
+
+		if (selectedAudioFrame < currentStartFrame || selectedAudioFrame > currentEndFrame) {
+			// We can't have the selected audio frame being outside the current selection
+			data.setSelectedAudioFrame(currentStartFrame + ((currentEndFrame-currentStartFrame)/2));
+		}
+
+		
+		repaint();
+	}
 
 	public void newAudioFile(ImageSoundData data) {
 		setRawSamples(data.audioFile().rawSampleData());
