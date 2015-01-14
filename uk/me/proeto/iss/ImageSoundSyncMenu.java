@@ -37,6 +37,27 @@ public class ImageSoundSyncMenu extends JMenuBar implements ActionListener {
 		
 		JMenu fileMenu = new JMenu("File");
 		fileMenu.setMnemonic(KeyEvent.VK_F);
+
+		JMenuItem loadProject = new JMenuItem("Load Project...");
+		loadProject.setActionCommand("load");
+		loadProject.setMnemonic(KeyEvent.VK_L);
+		loadProject.addActionListener(this);
+		fileMenu.add(loadProject);
+		
+		JMenuItem saveProject = new JMenuItem("Save Project...");
+		saveProject.setActionCommand("save");
+		saveProject.setMnemonic(KeyEvent.VK_S);
+		saveProject.addActionListener(this);
+		fileMenu.add(saveProject);
+
+		JMenuItem saveProjectAs = new JMenuItem("Save Project As...");
+		saveProjectAs.setActionCommand("saveas");
+		saveProjectAs.setMnemonic(KeyEvent.VK_A);
+		saveProjectAs.addActionListener(this);
+		fileMenu.add(saveProjectAs);
+
+		fileMenu.addSeparator();
+		
 		
 		JMenuItem openAudio = new JMenuItem("Open audio...");
 		openAudio.setActionCommand("open_audio");
@@ -49,6 +70,14 @@ public class ImageSoundSyncMenu extends JMenuBar implements ActionListener {
 		openImages.setMnemonic(KeyEvent.VK_I);
 		openImages.addActionListener(this);
 		fileMenu.add(openImages);
+		
+		fileMenu.addSeparator();
+		
+		JMenuItem exit = new JMenuItem("Exit");
+		exit.setActionCommand("exit");
+		exit.addActionListener(this);
+		exit.setMnemonic(KeyEvent.VK_X);
+		fileMenu.add(exit);
 		
 		add(fileMenu);
 		
@@ -115,6 +144,15 @@ public class ImageSoundSyncMenu extends JMenuBar implements ActionListener {
 			application.pause();
 		}
 
+		else if (command.equals("save")) {
+			application.saveProject();
+		}
+		else if (command.equals("saveas")) {
+			application.saveProjectAs();
+		}
+		else if (command.equals("exit")) {
+			System.exit(0);
+		}
 		
 		else {
 			throw new IllegalArgumentException("No known menu command '"+command+"'");

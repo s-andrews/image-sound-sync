@@ -19,10 +19,16 @@
 package uk.me.proeto.iss;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JSplitPane;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
@@ -40,6 +46,8 @@ public class ImageSoundSyncApplication extends JFrame {
 	private ImageSoundData data = new ImageSoundData();
 	private AudioPanel audioPanel = new AudioPanel(data);
 	private PreviewPlayer previewPlayer = null;
+	
+	private File currentProject = null;
 	
 	public ImageSoundSyncApplication () {
 		
@@ -93,6 +101,105 @@ public class ImageSoundSyncApplication extends JFrame {
 		readAudio(file);
 		
 	}
+	
+	public void saveProject () {
+		if (currentProject == null) {
+			saveProjectAs();
+		}
+		
+		try {
+			ZipOutputStream zip = new ZipOutputStream(new FileOutputStream(currentProject));
+			zip.putNextEntry(new ZipEntry("/"));
+			zip.putNextEntry(new ZipEntry("/Images/"));
+			zip.putNextEntry(new ZipEntry("/Audio/"));
+			zip.putNextEntry(new ZipEntry("/Config/"));
+			
+
+			byte [] buffer = new byte[1024];
+
+			// Add images
+			File [] imageFiles = data.imageSet().files();
+			
+			for (int f=0;f<imageFiles.length;f++) {
+				InputStream in = new FileInputStream(imageFiles[f]);
+				zip.putNextEntry(new ZipEntry("/Images/"+imageFiles[f].getName()));
+				int len;
+				while ((len = in.read(buffer)) > 0) { 
+					zip.write(buffer, 0, len); 
+				} 
+				in.close();
+				zip.closeEntry();				
+			}
+			
+			// Add audio
+			InputStream in = new FileInputStream(data.audioFile().file());
+			zip.putNextEntry(new ZipEntry("/Audio/"+data.audioFile().file().getName()));
+			int len;
+			while ((len = in.read(buffer)) > 0) { 
+				zip.write(buffer, 0, len); 
+			} 
+			in.close();
+			zip.closeEntry();				
+			
+			
+			// TODO:Write config
+			
+			
+			zip.close();
+			
+		}
+		catch (IOException ioe) {
+			JOptionPane.showMessageDialog(this, "Error saving project:"+ioe.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			ioe.printStackTrace();
+		}
+		
+	}
+	
+	public void saveProjectAs () {
+		
+		JFileChooser chooser = new JFileChooser();
+		chooser.setMultiSelectionEnabled(false);
+		chooser.setFileFilter(new FileFilter() {
+		
+			public String getDescription() {
+				return "Zip files";
+			}
+		
+			public boolean accept(File f) {
+				if (f.isDirectory() || f.getName().toLowerCase().endsWith(".zip")) {
+					return true;
+				}
+				else {
+					return false;
+				}
+			}
+		
+		});
+		
+		while (true) {
+			int result = chooser.showSaveDialog(this);
+			if (result == JFileChooser.CANCEL_OPTION) return;
+
+			File saveFile = chooser.getSelectedFile();
+		
+			if (! saveFile.getName().toLowerCase().endsWith(".zip")) {
+				saveFile = new File(saveFile.getAbsolutePath()+".zip");
+			}
+			
+			if (saveFile.exists()) {
+				int answer = JOptionPane.showConfirmDialog(this, ""+saveFile.getName()+" exists already.  Overwrite it?");
+				if (answer != JOptionPane.OK_OPTION) continue;
+			}
+
+			
+			setTitle("Image Sound Sync ["+saveFile.getName()+"}");
+			currentProject = saveFile;
+			saveProject();
+			break;
+		}
+		
+	}
+	
 	
 	public void readAudio (File file) throws IOException {
 		data.setAudioFile(new AudioFile(file));
